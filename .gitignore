@@ -1,0 +1,16 @@
+.github/
+
+# Ignore test folders and grading
+__test__/
+__tests__/
+autograde.js
+
+# Ignore all node_modules
+node_modules/
+
+# Ignore all environment variable files & secrets
+*.env
+*.env.*
+!*.env.example
+config/config.env
+__tests__/config.env
