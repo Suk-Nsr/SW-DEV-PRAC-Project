@@ -1,11 +1,11 @@
-# 📋 Project Plan: Restaurant Reservation System (Project #5)
+# Project Plan: Restaurant Reservation System (Project #5)
 > **วิชา:** 2110503 Software Development Practice (2569)  
 > **คะแนนรวม:** 35% (Term Project) + 3%* (Extra Credits)  
 > **ระยะเวลานำเสนอ:** 7 นาที (Demo + Presentation) + ถามตอบ 3 นาที
 
 ---
 
-## 🎯 1. วัตถุประสงค์และข้อกำหนดตามเกณฑ์ Syllabus
+## 1. วัตถุประสงค์และข้อกำหนดตามเกณฑ์ Syllabus
 
 > [!IMPORTANT]
 > **กฎเหล็กเรื่องการแบ่งงาน (จาก Syllabus ข้อ 17):**  
@@ -21,7 +21,7 @@
 
 ---
 
-## 👥 2. โครงสร้างการแบ่งงานระหว่างสมาชิก (50/50 Work Division)
+## 2. โครงสร้างการแบ่งงานระหว่างสมาชิก (50/50 Work Division)
 
 ```mermaid
 flowchart TD
@@ -29,23 +29,23 @@ flowchart TD
         Dev["branch: dev / main"]
     end
 
-    subgraph Member1["👤 สมาชิกคนที่ 1: User & Restaurant Domain"]
-        M1_Code["💻 Code:<br>- User Model (เพิ่ม tel)<br>- Auth Controller (Register/Login)<br>- Restaurant Model & Controller (CRUD)<br>- Extra: Profile API & CSV Export"]
-        M1_Doc["📑 Docs & Diagrams:<br>- Use Case Diagram (รวมทั้งระบบ)<br>- Sequence Diagram (Auth & Restaurant)<br>- Requirements & Use Case Specs (ฝั่งตนเอง)"]
-        M1_Test["🧪 Testing:<br>- Postman Test Suite (Auth & Restaurant)"]
+    subgraph Member1["Suk-Nsr: User & Restaurant Domain"]
+        M1_Code["Code:<br>- User Model (เพิ่ม tel)<br>- Auth Controller (Register/Login)<br>- Restaurant Model & Controller (CRUD)<br>- Extra: Profile API & CSV Export"]
+        M1_Doc["Docs & Diagrams:<br>- Use Case Diagram (รวมทั้งระบบ)<br>- Sequence Diagram (Auth & Restaurant)<br>- Requirements & Use Case Specs (ฝั่งตนเอง)"]
+        M1_Test["Testing:<br>- Postman Test Suite (Auth & Restaurant)"]
     end
 
-    subgraph Member2["👤 สมาชิกคนที่ 2: Reservation & Engine Domain"]
-        M2_Code["💻 Code:<br>- Reservation Model (user, restaurant, date, tables)<br>- Reservation Controller (CRUD + Quota <= 3 โต๊ะ)<br>- Extra: 2-Hour Cutoff Enforcement<br>- Extra: Time Slot & Table Capacity"]
-        M2_Doc["📑 Docs & Diagrams:<br>- Sequence Diagram (Reservation Lifecycle + Rules)<br>- UML Profile for API (Class/Entity Diagram)<br>- Use Case Specs (ฝั่ง Reservation)"]
-        M2_Test["🧪 Testing:<br>- Postman Test Suite (Reservation & Limits)"]
+    subgraph Member2["Alcanratia: Reservation & Engine Domain"]
+        M2_Code["Code:<br>- Reservation Model (user, restaurant, date, tables)<br>- Reservation Controller (CRUD + Quota <= 3 โต๊ะ)<br>- Extra: 2-Hour Cutoff Enforcement<br>- Extra: Time Slot & Table Capacity"]
+        M2_Doc["Docs & Diagrams:<br>- Sequence Diagram (Reservation Lifecycle + Rules)<br>- UML Profile for API (Class/Entity Diagram)<br>- Use Case Specs (ฝั่ง Reservation)"]
+        M2_Test["Testing:<br>- Postman Test Suite (Reservation & Limits)"]
     end
 
-    subgraph Shared["🤝 งานร่วมกัน (Collaboration)"]
-        S1["🚀 DB Schema Setup & Git Workflow"]
-        S2["🤖 Newman Automation Script Integration"]
-        S3["🎥 Extra Credit VDO (Script + Coding/Demo)"]
-        S4["🎤 Slide Deck & ซ้อมพรีเซนต์ 7 นาที"]
+    subgraph Shared["งานร่วมกัน (Collaboration)"]
+        S1["DB Schema Setup & Git Workflow"]
+        S2["Newman Automation Script Integration"]
+        S3["Extra Credit VDO (Script + Coding/Demo)"]
+        S4["Slide Deck & ซ้อมพรีเซนต์ 7 นาที"]
     end
 
     Member1 --> Dev
@@ -56,24 +56,24 @@ flowchart TD
 
 ---
 
-## 📊 3. ตารางแจกแจงงานและสถานะ (Task Tracking Matrix)
+## 3. ตารางแจกแจงงานและสถานะ (Task Tracking Matrix)
 
 > [!IMPORTANT]
 > **ข้อตกลงการอัปเดตสถานะงาน (Status Update Protocol):**  
 > ทุกครั้งที่มีการเริ่มทำหรือพัฒนาส่วนใดเสร็จสิ้น (รวมถึงการเขียนโค้ด, วาด Diagram, ทำ Test หรือ Merge PR) **จะต้องเข้ามาอัปเดตสถานะในตารางนี้เสมอ** เพื่อให้เพื่อนร่วมทีมและผู้ช่วย AI ทราบความคืบหน้าที่แท้จริง:
-> - ⚪ **Not Started:** งานที่ยังไม่ได้เริ่ม
-> - 🟡 **In Progress:** กำลังดำเนินการอยู่ (ระบุ Branch หรือความคืบหน้า)
-> - 🟢 **Done:** งานเสร็จสมบูรณ์ ผ่านการทดสอบ (Tested) และ Merge โค้ดเรียบร้อยแล้ว
+> - **Not Started:** งานที่ยังไม่ได้เริ่ม
+> - **In Progress:** กำลังดำเนินการอยู่ (ระบุ Branch หรือความคืบหน้า)
+> - **Done:** งานเสร็จสมบูรณ์ ผ่านการทดสอบ (Tested) และ Merge โค้ดเรียบร้อยแล้ว
 
 ### ส่วนที่ 1: Baseline Features & Core API
 
 | หมวดหมู่ | งาน / ฟีเจอร์ | ผู้รับผิดชอบหลัก | ผลลัพธ์ / Deliverables | สถานะ |
 | :--- | :--- | :---: | :--- | :---: |
-| **Setup** | • Clone repo, สร้างโฟลเดอร์, วางโครงสร้างจาก VacQ<br>• ตั้งค่า `.env` และเชื่อมต่อ MongoDB Atlas | **ทั้ง 2 คน** | โครงสร้างโปรเจกต์พร้อมรัน `npm run dev` | 🟡 In Progress |
-| **User & Auth** | • Refactor `models/Users.js`: เพิ่มฟิลด์ `telephone number` พร้อม regex ตรวจสอบ<br>• ตรวจสอบ Register, Login, GetMe, Logout ให้ส่ง `tel` กลับมาด้วย | **คนที่ 1** | Auth API รองรับเบอร์โทรสมบูรณ์ | ⚪ Not Started |
-| **Restaurant** | • สร้าง `models/Restaurant.js` (name, address, telephone, open-close time)<br>• สร้าง `controllers/restaurants.js` และ `routes/restaurants.js`<br>• รองรับ CRUD (Public ดูได้, Admin สร้าง/แก้ไข/ลบได้) | **คนที่ 1** | Restaurant CRUD API ครบถ้วน | ⚪ Not Started |
-| **Reservation** | • สร้าง `models/Reservation.js` (apptDate/reservationDate, user, restaurant, tablesCount)<br>• สร้าง `controllers/reservations.js` และ `routes/reservations.js`<br>• User ทั่วไปดู/แก้/ลบได้เฉพาะของตนเอง<br>• Admin ดู/แก้/ลบได้ทุกการจองในระบบ | **คนที่ 2** | Reservation CRUD API ครบถ้วน | ⚪ Not Started |
-| **Booking Logic** | • ตรวจสอบโควตา: Registered User จองได้สูงสุดไม่เกิน 3 โต๊ะ (หรือ 3 การจอง)<br>• ถ้าไม่ใช่ Admin แล้วพยายามจองเกิน ให้คืนค่า HTTP 400 Bad Request | **คนที่ 2** | Validation Logic ใน `addReservation` | ⚪ Not Started |
+| **Setup** | • Clone repo, สร้างโฟลเดอร์, วางโครงสร้างจาก VacQ<br>• ตั้งค่า `.env` และเชื่อมต่อ MongoDB Atlas | **Suk-Nsr & Alcanratia** | โครงสร้างโปรเจกต์พร้อมรัน `npm run dev` | In Progress |
+| **User & Auth** | • Refactor `models/Users.js`: เพิ่มฟิลด์ `telephone number` พร้อม regex ตรวจสอบ<br>• ตรวจสอบ Register, Login, GetMe, Logout ให้ส่ง `tel` กลับมาด้วย | **Suk-Nsr** | Auth API รองรับเบอร์โทรสมบูรณ์ | Not Started |
+| **Restaurant** | • สร้าง `models/Restaurant.js` (name, address, telephone, open-close time)<br>• สร้าง `controllers/restaurants.js` และ `routes/restaurants.js`<br>• รองรับ CRUD (Public ดูได้, Admin สร้าง/แก้ไข/ลบได้) | **Suk-Nsr** | Restaurant CRUD API ครบถ้วน | Not Started |
+| **Reservation** | • สร้าง `models/Reservation.js` (apptDate/reservationDate, user, restaurant, tablesCount)<br>• สร้าง `controllers/reservations.js` และ `routes/reservations.js`<br>• User ทั่วไปดู/แก้/ลบได้เฉพาะของตนเอง<br>• Admin ดู/แก้/ลบได้ทุกการจองในระบบ | **Alcanratia** | Reservation CRUD API ครบถ้วน | Not Started |
+| **Booking Logic** | • ตรวจสอบโควตา: Registered User จองได้สูงสุดไม่เกิน 3 โต๊ะ (หรือ 3 การจอง)<br>• ถ้าไม่ใช่ Admin แล้วพยายามจองเกิน ให้คืนค่า HTTP 400 Bad Request | **Alcanratia** | Validation Logic ใน `addReservation` | Not Started |
 
 ---
 
@@ -81,10 +81,10 @@ flowchart TD
 
 | ฟีเจอร์ Extra Credit | ผู้รับผิดชอบหลัก | รายละเอียดฟังก์ชัน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **1. 2-Hour Cutoff Enforcer** | **คนที่ 2** | ตรวจสอบว่าเหลือเวลาก่อนถึงเวลานัดหมาย $\ge 2$ ชั่วโมงหรือไม่ ถ้าเหลือน้อยกว่า 2 ชม. จะไม่อนุญาตให้แก้หรือยกเลิกการจอง | ⚪ Not Started |
-| **2. Time Slot & Table Capacity** | **คนที่ 2** | ให้เลือกช่วงเวลา (Slot) ในช่วงเวลาเปิด-ปิด และเช็คความจุโต๊ะรวมของร้านใน Slot นั้น ไม่ให้จองเกิน | ⚪ Not Started |
-| **3. Profile & Password Management** | **คนที่ 1** | API `PUT /auth/updatedetails` (แก้ชื่อ, เบอร์โทร) และ `PUT /auth/updatepassword` (ตรวจรหัสผ่านเดิมก่อนเปลี่ยน) | ⚪ Not Started |
-| **4. Admin CSV Export** | **คนที่ 1** | API `GET /reservations/export` ให้ Admin ดึงข้อมูลการจองตามช่วงวันที่เป็นไฟล์ `.csv` | ⚪ Not Started |
+| **1. 2-Hour Cutoff Enforcer** | **Alcanratia** | ตรวจสอบว่าเหลือเวลาก่อนถึงเวลานัดหมาย $\ge 2$ ชั่วโมงหรือไม่ ถ้าเหลือน้อยกว่า 2 ชม. จะไม่อนุญาตให้แก้หรือยกเลิกการจอง | Not Started |
+| **2. Time Slot & Table Capacity** | **Alcanratia** | ให้เลือกช่วงเวลา (Slot) ในช่วงเวลาเปิด-ปิด และเช็คความจุโต๊ะรวมของร้านใน Slot นั้น ไม่ให้จองเกิน | Not Started |
+| **3. Profile & Password Management** | **Suk-Nsr** | API `PUT /auth/updatedetails` (แก้ชื่อ, เบอร์โทร) และ `PUT /auth/updatepassword` (ตรวจรหัสผ่านเดิมก่อนเปลี่ยน) | Not Started |
+| **4. Admin CSV Export** | **Suk-Nsr** | API `GET /reservations/export` ให้ Admin ดึงข้อมูลการจองตามช่วงวันที่เป็นไฟล์ `.csv` | Not Started |
 
 ---
 
@@ -95,11 +95,11 @@ flowchart TD
 
 | รายการเอกสาร / Diagram | ผู้รับผิดชอบหลัก | รายละเอียดงาน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **Requirements & Use Case Specs** | **คนที่ 1 & 2** | คนที่ 1 รับผิดชอบสเปกฝั่ง Auth & Restaurant / คนที่ 2 รับผิดชอบฝั่ง Reservation | ⚪ Not Started |
-| **Use Case Diagram (รวมทั้งระบบ)** | **คนที่ 1** | วาด Diagram ภาพรวม แสดง Actor: Guest, Registered User, Admin เชื่อมกับ Use Cases ทั้งหมด | ⚪ Not Started |
-| **Sequence Diagram 1: Auth & Restaurant** | **คนที่ 1** | แสดง Interaction การ Register (มีเบอร์โทร) และ Admin สร้าง/แก้ไขข้อมูลร้านอาหาร | ⚪ Not Started |
-| **Sequence Diagram 2: Reservation Lifecycle** | **คนที่ 2** | แสดง Interaction การจองโต๊ะ (ผ่านการเช็คโควตา 3 โต๊ะ) และการแก้ไข/ยกเลิก (ผ่านการเช็ค Cutoff 2 ชม.) | ⚪ Not Started |
-| **UML Profile for API (Class/Entity Diagram)** | **คนที่ 2** | แสดงโครงสร้าง Entity (User, Restaurant, Reservation), Relationships, Attributes, และ Mapping สู่ REST Endpoints | ⚪ Not Started |
+| **Requirements & Use Case Specs** | **Suk-Nsr & Alcanratia** | Suk-Nsr รับผิดชอบสเปกฝั่ง Auth & Restaurant / Alcanratia รับผิดชอบฝั่ง Reservation | Not Started |
+| **Use Case Diagram (รวมทั้งระบบ)** | **Suk-Nsr** | วาด Diagram ภาพรวม แสดง Actor: Guest, Registered User, Admin เชื่อมกับ Use Cases ทั้งหมด | Not Started |
+| **Sequence Diagram 1: Auth & Restaurant** | **Suk-Nsr** | แสดง Interaction การ Register (มีเบอร์โทร) และ Admin สร้าง/แก้ไขข้อมูลร้านอาหาร | Not Started |
+| **Sequence Diagram 2: Reservation Lifecycle** | **Alcanratia** | แสดง Interaction การจองโต๊ะ (ผ่านการเช็คโควตา 3 โต๊ะ) และการแก้ไข/ยกเลิก (ผ่านการเช็ค Cutoff 2 ชม.) | Not Started |
+| **UML Profile for API (Class/Entity Diagram)** | **Alcanratia** | แสดงโครงสร้าง Entity (User, Restaurant, Reservation), Relationships, Attributes, และ Mapping สู่ REST Endpoints | Not Started |
 
 ---
 
@@ -107,9 +107,9 @@ flowchart TD
 
 | รายการทดสอบ | ผู้รับผิดชอบหลัก | รายละเอียดงาน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **Auth & Restaurant Test Suite** | **คนที่ 1** | เขียน Test Scripts ใน Postman: Register, Login, Token Extract, CRUD Restaurant, Error Cases | ⚪ Not Started |
-| **Reservation Test Suite** | **คนที่ 2** | เขียน Test Scripts ใน Postman: จองโต๊ะปกติ, จองโต๊ะเกินโควตา (คาดหวัง 400), เช็คสิทธิ์ User vs Admin, Cutoff Test | ⚪ Not Started |
-| **Newman Automation Pipeline** | **ร่วมกัน** | รวมเป็น Collection เดียว จัดลำดับ Runner, รันคำสั่ง `newman run ...` พร้อมบันทึกผลการทดสอบเตรียมเปิดเดโมในสไลด์ | ⚪ Not Started |
+| **Auth & Restaurant Test Suite** | **Suk-Nsr** | เขียน Test Scripts ใน Postman: Register, Login, Token Extract, CRUD Restaurant, Error Cases | Not Started |
+| **Reservation Test Suite** | **Alcanratia** | เขียน Test Scripts ใน Postman: จองโต๊ะปกติ, จองโต๊ะเกินโควตา (คาดหวัง 400), เช็คสิทธิ์ User vs Admin, Cutoff Test | Not Started |
+| **Newman Automation Pipeline** | **Suk-Nsr & Alcanratia** | รวมเป็น Collection เดียว จัดลำดับ Runner, รันคำสั่ง `newman run ...` พร้อมบันทึกผลการทดสอบเตรียมเปิดเดโมในสไลด์ | Not Started |
 
 ---
 
@@ -117,13 +117,13 @@ flowchart TD
 
 | หัวข้อ | ผู้รับผิดชอบหลัก | รายละเอียดงาน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **Extra Credit VDO (ความยาว 3-5 นาที)** | **ร่วมกัน** | • คนที่ 1: วาง Script สรุป Concept และเป็นผู้บรรยาย<br>• คนที่ 2: เตรียมโค้ด Demo อัดหน้าจอการทำงานของฟีเจอร์ (เช่น Cutoff 2 ชั่วโมง หรือ Slot Capacity)<br>• อัปโหลดขึ้น YouTube (Unlisted) หรือ Google Drive | ⚪ Not Started |
-| **Slide Deck (7 หัวข้อตาม Syllabus)** | **ร่วมกัน** | 1. โจทย์ที่ได้รับ<br>2. สาธิต Newman/Postman Runner<br>3. โค้ดที่แก้ไขไปจากเดิม<br>4. เอกสารและ Diagrams<br>5. การแบ่งงานในทีม (Team Contribution Slide)<br>6. ลิงก์คลิป Extra Credit VDO<br>7. ลิงก์ GitHub Repo | ⚪ Not Started |
-| **Dry Run พรีเซนต์ 7 นาที** | **ร่วมกัน** | ซ้อมแบ่งบทพูด: คนที่ 1 (3.5 นาที) / คนที่ 2 (3.5 นาที) พร้อมเตรียมตอบคำถาม Q&A 3 นาที | ⚪ Not Started |
+| **Extra Credit VDO (ความยาว 3-5 นาที)** | **Suk-Nsr & Alcanratia** | • Suk-Nsr: วาง Script สรุป Concept และเป็นผู้บรรยาย<br>• Alcanratia: เตรียมโค้ด Demo อัดหน้าจอการทำงานของฟีเจอร์ (เช่น Cutoff 2 ชั่วโมง หรือ Slot Capacity)<br>• อัปโหลดขึ้น YouTube (Unlisted) หรือ Google Drive | Not Started |
+| **Slide Deck (7 หัวข้อตาม Syllabus)** | **Suk-Nsr & Alcanratia** | 1. โจทย์ที่ได้รับ<br>2. สาธิต Newman/Postman Runner<br>3. โค้ดที่แก้ไขไปจากเดิม<br>4. เอกสารและ Diagrams<br>5. การแบ่งงานในทีม (Team Contribution Slide)<br>6. ลิงก์คลิป Extra Credit VDO<br>7. ลิงก์ GitHub Repo | Not Started |
+| **Dry Run พรีเซนต์ 7 นาที** | **Suk-Nsr & Alcanratia** | ซ้อมแบ่งบทพูด: Suk-Nsr (3.5 นาที) / Alcanratia (3.5 นาที) พร้อมเตรียมตอบคำถาม Q&A 3 นาที | Not Started |
 
 ---
 
-## 🌳 4. กลยุทธ์การใช้งาน Git (Branching & Commit Guidelines)
+## 4. กลยุทธ์การใช้งาน Git (Branching & Commit Guidelines)
 
 เพื่อให้ประวัติ Git ใน GitHub แสดง Contribution ของทั้งสองคนอย่างชัดเจนและถูกต้อง:
 
@@ -131,9 +131,9 @@ flowchart TD
 main (Production: โค้ดที่เสร็จสมบูรณ์และผ่านการทดสอบแล้ว)
   │
   └── dev (Integration Branch: รวมโค้ดก่อนตัดขึ้น main)
-        ├── feat/auth-and-restaurant   <-- 👤 นิสิตคนที่ 1 ทำงานบน Branch นี้
-        ├── feat/reservation-engine    <-- 👤 นิสิตคนที่ 2 ทำงานบน Branch นี้
-        └── feat/extra-credits         <-- 🤝 สลับกันทำหรือแยก branch ย่อย
+        ├── feat/auth-and-restaurant   <-- Suk-Nsr ทำงานบน Branch นี้
+        ├── feat/reservation-engine    <-- Alcanratia ทำงานบน Branch นี้
+        └── feat/extra-credits         <-- สลับกันทำหรือแยก branch ย่อย
 ```
 
 ### ข้อตกลงการ Commit โค้ด:
@@ -144,24 +144,24 @@ main (Production: โค้ดที่เสร็จสมบูรณ์แ�
    - `feat(restaurant): implement CRUD controllers and routes`
    - `feat(reservation): implement 3-table reservation limit check`
    - `test(postman): add automated tests for reservation quota error handling`
-4. **อัปเดตสถานะใน `PROJECT_PLAN.md` เสมอ:** ทุกครั้งที่เริ่มฟีเจอร์ใหม่ หรือทำเสร็จสิ้นจนผ่านการทดสอบ ให้อัปเดตสัญลักษณ์สถานะ (⚪ / 🟡 / 🟢) ในเอกสารนี้ควบคู่ไปกับ Commit เสมอ
+4. **อัปเดตสถานะใน `PROJECT_PLAN.md` เสมอ:** ทุกครั้งที่เริ่มฟีเจอร์ใหม่ หรือทำเสร็จสิ้นจนผ่านการทดสอบ ให้อัปเดตสถานะ (`Not Started` / `In Progress` / `Done`) ในเอกสารนี้ควบคู่ไปกับ Commit เสมอ
 
 ---
 
-## ⏱️ 5. ไทม์ไลน์การทำงาน 10 วัน (Countdown to Presentation)
+## 5. ไทม์ไลน์การทำงาน 10 วัน (Countdown to Presentation)
 
 | วันที่ | เฟสงาน | กิจกรรมหลัก |
 | :---: | :--- | :--- |
-| **Day 1 - 2** | Setup & Schemas | สร้าง Repo, ตั้งค่า Branch, คนที่ 1 Refactor User & Restaurant Schema / คนที่ 2 วาง Reservation Schema |
-| **Day 3 - 5** | Core Coding | คนที่ 1 เขียน Restaurant CRUD + Extra / คนที่ 2 เขียน Reservation CRUD + Quota 3 โต๊ะ + Cutoff |
-| **Day 6 - 7** | Testing & Diagrams | คนที่ 1 & 2 เขียน Postman Tests และรวมเข้า Newman Runner พร้อมวาด Diagrams ทั้งหมด |
+| **Day 1 - 2** | Setup & Schemas | สร้าง Repo, ตั้งค่า Branch, Suk-Nsr Refactor User & Restaurant Schema / Alcanratia วาง Reservation Schema |
+| **Day 3 - 5** | Core Coding | Suk-Nsr เขียน Restaurant CRUD + Extra / Alcanratia เขียน Reservation CRUD + Quota 3 โต๊ะ + Cutoff |
+| **Day 6 - 7** | Testing & Diagrams | Suk-Nsr & Alcanratia เขียน Postman Tests และรวมเข้า Newman Runner พร้อมวาด Diagrams ทั้งหมด |
 | **Day 8** | Extra Credit VDO | อัดคลิปสอนทำ Extra Credit VDO (3-5 นาที) และอัปโหลดรับลิงก์ |
 | **Day 9** | Slide Deck | จัดทำสไลด์ 7 หัวข้อ พร้อมแคปภาพ Diagrams, Newman Report, Code Diffs |
-| **Day 10** | Rehearsal & Delivery | ซ้อมพูดจับเวลา 7 นาที (คนละ 3.5 นาที), ตรวจสอบ Checklist ส่งงาน |
+| **Day 10** | Rehearsal & Delivery | ซ้อมพูดจับเวลา 7 นาที (Suk-Nsr 3.5 นาที / Alcanratia 3.5 นาที), ตรวจสอบ Checklist ส่งงาน |
 
 ---
 
-## 📌 Checklist ตรวจสอบก่อนขึ้นนำเสนอ
+## 6. Checklist ตรวจสอบก่อนขึ้นนำเสนอ
 - [ ] โค้ดใน Repo รัน `npm start` หรือ `npm run dev` ผ่านฉลุย ไม่มี Warning หรือ Crash
 - [ ] Postman Collection รันผ่าน Newman ได้ผลลัพธ์สีเขียว 100% (All Assertions Passed)
 - [ ] Diagrams ครบ 4 ประเภท (Requirements, Use Cases, Sequence, UML Profile for API)
@@ -169,4 +169,3 @@ main (Production: โค้ดที่เสร็จสมบูรณ์แ�
 - [ ] ลิงก์คลิป Extra Credit VDO เปิดได้ ไม่ติด Permission Private
 - [ ] ลิงก์ GitHub Repo เข้าถึงได้ มีประวัติ Commit ของทั้งสองคนชัดเจน
 - [ ] ควบคุมเวลาพรีเซนต์ไม่เกิน 7 นาที
-
