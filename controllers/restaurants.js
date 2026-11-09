@@ -14,51 +14,51 @@ try {
 //@route    GET /api/v1/restaurants
 //@access   Public
 exports.getRestaurants = async (req, res, next) => {
-    let query;
-
-    // Copy req.query
-    const reqQuery = { ...req.query };
-
-    // Fields to exclude from filtering
-    const removeFields = ['select', 'sort', 'page', 'limit'];
-    removeFields.forEach(param => delete reqQuery[param]);
-
-    // Create query string with operators ($gt, $gte, etc)
-    let queryStr = JSON.stringify(reqQuery);
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-
-    // Finding resource
-    query = Restaurant.find(JSON.parse(queryStr));
-
-    // Try populating reservations if virtual is registered
     try {
-        query = query.populate('reservations');
-    } catch (e) {
-        // Fallback without populate
-    }
+        // Copy req.query
+        const reqQuery = { ...req.query };
 
-    // Select Fields
-    if (req.query.select) {
-        const fields = req.query.select.split(',').join(' ');
-        query = query.select(fields);
-    }
+        // Fields to exclude from filtering
+        const removeFields = ['select', 'sort', 'page', 'limit'];
+        removeFields.forEach(param => delete reqQuery[param]);
 
-    // Sort
-    if (req.query.sort) {
-        const sortBy = req.query.sort.split(',').join(' ');
-        query = query.sort(sortBy);
-    } else {
-        query = query.sort('-createdAt');
-    }
+        // Create query string with operators ($gt, $gte, etc)
+        let queryStr = JSON.stringify(reqQuery);
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+        const parsedQuery = JSON.parse(queryStr);
 
-    // Pagination
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 25;
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
+        // Finding resource
+        let query = Restaurant.find(parsedQuery);
 
-    try {
-        const total = await Restaurant.countDocuments();
+        // Try populating reservations if registered
+        try {
+            query = query.populate('reservations');
+        } catch (e) {
+            // Fallback without populate
+        }
+
+        // Select Fields
+        if (req.query.select) {
+            const fields = req.query.select.split(',').join(' ');
+            query = query.select(fields);
+        }
+
+        // Sort
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(',').join(' ');
+            query = query.sort(sortBy);
+        } else {
+            query = query.sort('-createdAt');
+        }
+
+        // Pagination with non-negative guard
+        const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+        const limit = Math.max(1, parseInt(req.query.limit, 10) || 25);
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        // Accurate count matching the filter
+        const total = await Restaurant.countDocuments(parsedQuery);
         query = query.skip(startIndex).limit(limit);
 
         const restaurants = await query;
@@ -104,6 +104,12 @@ exports.getRestaurant = async (req, res, next) => {
 
         res.status(200).json({ success: true, data: restaurant });
     } catch (err) {
+        if (err.name === 'CastError') {
+            return res.status(404).json({
+                success: false,
+                message: `Restaurant not found with invalid id format: ${req.params.id}`
+            });
+        }
         res.status(400).json({ success: false, message: err.message });
     }
 };
@@ -116,6 +122,15 @@ exports.createRestaurant = async (req, res, next) => {
         const restaurantData = { ...req.body };
         if (restaurantData.telephone && !restaurantData.tel) {
             restaurantData.tel = restaurantData.telephone;
+        }
+
+        // Auto-extract openTime and closeTime if openCloseTime is provided
+        if (restaurantData.openCloseTime && (!restaurantData.openTime || !restaurantData.closeTime)) {
+            const parts = restaurantData.openCloseTime.split(/[-–—]/);
+            if (parts.length === 2) {
+                restaurantData.openTime = parts[0].trim();
+                restaurantData.closeTime = parts[1].trim();
+            }
         }
 
         const restaurant = await Restaurant.create(restaurantData);
@@ -135,6 +150,14 @@ exports.updateRestaurant = async (req, res, next) => {
             updateData.tel = updateData.telephone;
         }
 
+        if (updateData.openCloseTime && (!updateData.openTime || !updateData.closeTime)) {
+            const parts = updateData.openCloseTime.split(/[-–—]/);
+            if (parts.length === 2) {
+                updateData.openTime = parts[0].trim();
+                updateData.closeTime = parts[1].trim();
+            }
+        }
+
         const restaurant = await Restaurant.findByIdAndUpdate(req.params.id, updateData, {
             new: true,
             runValidators: true
@@ -149,6 +172,12 @@ exports.updateRestaurant = async (req, res, next) => {
 
         res.status(200).json({ success: true, data: restaurant });
     } catch (err) {
+        if (err.name === 'CastError') {
+            return res.status(404).json({
+                success: false,
+                message: `Restaurant not found with invalid id format: ${req.params.id}`
+            });
+        }
         res.status(400).json({ success: false, message: err.message });
     }
 };
@@ -174,11 +203,26 @@ exports.deleteRestaurant = async (req, res, next) => {
             });
         }
 
+        // Also check Appointment model if separate
+        try {
+            const Appointment = require('../models/Appointment');
+            if (Appointment && Appointment !== Reservation) {
+                await Appointment.deleteMany({
+                    $or: [{ restaurant: req.params.id }, { hospital: req.params.id }]
+                });
+            }
+        } catch (e) {}
+
         await Restaurant.deleteOne({ _id: req.params.id });
 
         res.status(200).json({ success: true, data: {} });
     } catch (err) {
+        if (err.name === 'CastError') {
+            return res.status(404).json({
+                success: false,
+                message: `Restaurant not found with invalid id format: ${req.params.id}`
+            });
+        }
         res.status(400).json({ success: false, message: err.message });
     }
 };
-

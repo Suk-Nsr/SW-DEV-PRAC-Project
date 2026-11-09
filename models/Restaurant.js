@@ -11,27 +11,33 @@ const RestaurantSchema = new mongoose.Schema(
     },
     address: {
         type: String,
-        required: [true, 'Please add an address']
+        required: [true, 'Please add an address'],
+        trim: true
     },
     tel: {
         type: String,
-        required: [true, 'Please add a telephone number']
+        required: [true, 'Please add a telephone number'],
+        trim: true
     },
     openCloseTime: {
         type: String,
-        required: [true, 'Please add open-close time (e.g. 10:00 - 22:00)']
+        required: [true, 'Please add open-close time (e.g. 10:00 - 22:00)'],
+        trim: true
     },
     openTime: {
         type: String,
-        default: '10:00'
+        default: '10:00',
+        trim: true
     },
     closeTime: {
         type: String,
-        default: '22:00'
+        default: '22:00',
+        trim: true
     },
     tableCapacity: {
         type: Number,
-        default: 20
+        default: 20,
+        min: [1, 'Table capacity must be at least 1']
     },
     createdAt: {
         type: Date,
@@ -48,6 +54,18 @@ RestaurantSchema.virtual('telephone')
     .get(function() { return this.tel; })
     .set(function(value) { this.tel = value; });
 
+// Pre-save hook to automatically parse openTime and closeTime from openCloseTime
+RestaurantSchema.pre('save', function(next) {
+    if (this.openCloseTime && (!this.openTime || !this.closeTime || this.isModified('openCloseTime'))) {
+        const parts = this.openCloseTime.split(/[-–—]/);
+        if (parts.length === 2) {
+            this.openTime = parts[0].trim();
+            this.closeTime = parts[1].trim();
+        }
+    }
+    next();
+});
+
 // Reverse populate with virtuals for reservations
 RestaurantSchema.virtual('reservations', {
     ref: 'Reservation',
@@ -57,4 +75,3 @@ RestaurantSchema.virtual('reservations', {
 });
 
 module.exports = mongoose.model('Restaurant', RestaurantSchema);
-

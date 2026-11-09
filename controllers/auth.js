@@ -30,12 +30,17 @@ exports.register = async (req, res, next) => {
     try {
         const { name, email, password, role, tel, telephone } = req.body;
 
+        const phone = tel || telephone;
+        if (!phone) {
+            return res.status(400).json({ success: false, message: 'Please provide a telephone number' });
+        }
+
         const user = await User.create({
             name,
-            email,
+            email: typeof email === 'string' ? email.trim().toLowerCase() : email,
             password,
             role,
-            tel: tel || telephone
+            tel: phone
         });
 
         sendTokenResponse(user, 201, res);
@@ -52,11 +57,13 @@ exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ success: false, msg: 'Please provide an email and password' });
+        if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({ success: false, msg: 'Please provide a valid email and password' });
         }
 
-        const user = await User.findOne({ email }).select('+password');
+        const normalizedEmail = email.trim().toLowerCase();
+
+        const user = await User.findOne({ email: normalizedEmail }).select('+password');
 
         if (!user) {
             return res.status(400).json({ success: false, msg: 'Invalid credentials' });
@@ -80,6 +87,9 @@ exports.login = async (req, res, next) => {
 exports.getMe = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
         res.status(200).json({ success: true, data: user });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Server error' });
@@ -106,18 +116,37 @@ exports.logout = async (req, res, next) => {
 //@access  Private
 exports.updateDetails = async (req, res, next) => {
     try {
-        const fieldsToUpdate = {};
-        if (req.body.name) fieldsToUpdate.name = req.body.name;
-        if (req.body.tel || req.body.telephone) fieldsToUpdate.tel = req.body.tel || req.body.telephone;
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
 
-        const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+        const fieldsToUpdate = {};
+        if (req.body.name !== undefined) {
+            const trimmedName = String(req.body.name).trim();
+            if (!trimmedName) {
+                return res.status(400).json({ success: false, message: 'Name cannot be empty' });
+            }
+            fieldsToUpdate.name = trimmedName;
+        }
+
+        const phone = req.body.tel || req.body.telephone;
+        if (phone !== undefined) {
+            const trimmedTel = String(phone).trim();
+            if (!trimmedTel) {
+                return res.status(400).json({ success: false, message: 'Telephone number cannot be empty' });
+            }
+            fieldsToUpdate.tel = trimmedTel;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
             new: true,
             runValidators: true
         });
 
         res.status(200).json({
             success: true,
-            data: user
+            data: updatedUser
         });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
@@ -138,7 +167,24 @@ exports.updatePassword = async (req, res, next) => {
             });
         }
 
+        if (typeof newPassword !== 'string' || newPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: 'New password must be at least 6 characters long'
+            });
+        }
+
+        if (currentPassword === newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'New password must be different from current password'
+            });
+        }
+
         const user = await User.findById(req.user.id).select('+password');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
 
         // Check if current password matches
         const isMatch = await user.matchPassword(currentPassword);
