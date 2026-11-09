@@ -80,3 +80,4 @@ JWT_COOKIE_EXPIRE=30
   ```
   http://localhost:5000/api-docs
   ```
+
