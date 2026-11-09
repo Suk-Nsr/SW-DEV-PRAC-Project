@@ -7,6 +7,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a name']
     },
+    tel: {
+        type: String,
+        required: [true, 'Please add a telephone number']
+    },
     email: {
         type: String,
         required: [true, 'Please add an email'],
@@ -33,9 +37,20 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Alias virtual for telephone
+UserSchema.virtual('telephone')
+    .get(function() { return this.tel; })
+    .set(function(value) { this.tel = value; });
+
 UserSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) {
+        return next();
+    }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });
