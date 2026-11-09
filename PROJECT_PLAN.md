@@ -21,7 +21,43 @@
 
 ---
 
-## 2. โครงสร้างการแบ่งงานระหว่างสมาชิก (50/50 Work Division)
+## 2. ข้อกำหนดระบบและเงื่อนไขทางเทคนิค (System Requirements & Constraints)
+
+### 2.1 ข้อจำกัดทางเทคนิค (Constraints)
+* **API Only:** ระบบต้องพัฒนาเป็น Web API ในรูปแบบ REST APIs
+* **No Frontend:** ไม่ต้องพัฒนาส่วนติดต่อผู้ใช้ (Frontend)
+* **Database:** ใช้ MongoDB Atlas ร่วมกับ Mongoose
+* **Environment:** พัฒนาด้วย Node.js และ Express Framework
+
+### 2.2 ข้อกำหนดด้านคุณภาพ (Non-Functional Requirements)
+* **Security:** 
+  * ระบบต้องยืนยันตัวตนผู้ใช้งานด้วย Username/Email และ Password
+  * ระบบต้องรักษาความลับของธุรกรรมผู้ใช้งาน (Confidentiality) ผ่าน JWT Authentication และการจำกัดสิทธิ์ (Authorization)
+* **Performance:** ระบบต้องตอบสนองคำขอ (API Response) ภายในเวลาไม่เกิน 3 วินาที
+* **Usability & Testing:** ระบบต้องถูกเรียกใช้งานและทดสอบการทำงานอัตโนมัติผ่าน Postman / Newman
+
+### 2.3 ข้อกำหนดการทำงานพื้นฐาน (Baseline Requirements)
+1. The system shall allow a user to register by specifying the name, telephone number, email, and password.
+2. After registration, the user becomes a registered user, and the system shall allow the user to log in to use the system by specifying the email and password. The system shall allow a registered user to log out.
+3. After login, the system shall allow the registered user to reserve up to 3 tables by specifying the date and the preferred restaurant. The restaurant list is also provided to the user. A restaurant information includes the name, address, telephone number, and open-close time.
+4. The system shall allow the registered user to view his/her restaurant reservation.
+5. The system shall allow the registered user to edit his/her restaurant reservation.
+6. The system shall allow the registered user to delete his/her restaurant reservation.
+7. The system shall allow the admin to view any restaurant reservation.
+8. The system shall allow the admin to edit any restaurant reservation.
+9. The system shall allow the admin to delete any restaurant reservation.
+
+### 2.4 ข้อกำหนดส่วนขยายพิเศษ (Extra Credit Requirements)
+1. The system shall allow the registered user to select a specific dining time slot (within the restaurant's open hours) on the reservation date, and automatically prevent bookings if the restaurant's table capacity is fully booked for that slot.
+2. The system shall allow a registered user to view and update their profile details (name and telephone number) and change their password by verifying their current password.
+3. The system shall enforce a cancellation and modification cutoff, permitting a registered user to edit or delete a reservation only if there are at least 2 hours remaining before the reserved time.
+4. The system shall send an automated reservation confirmation email to the registered user upon successful booking, modification, or cancellation via a third-party email service (e.g., SendGrid or Resend).
+5. The system shall allow the admin to export all reservation records within a selected date range as a downloadable CSV file.
+6. The system shall allow the registered user to specify the guest count (party size) and provide optional dietary requirements or special requests (e.g., food allergies, seating preferences) when creating a reservation.
+
+---
+
+## 3. โครงสร้างการแบ่งงานระหว่างสมาชิก (50/50 Work Division)
 
 ```mermaid
 flowchart TD
@@ -56,7 +92,7 @@ flowchart TD
 
 ---
 
-## 3. ตารางแจกแจงงานและสถานะ (Task Tracking Matrix)
+## 4. ตารางแจกแจงงานและสถานะ (Task Tracking Matrix)
 
 > [!IMPORTANT]
 > **ข้อตกลงการอัปเดตสถานะงาน (Status Update Protocol):**  
@@ -123,7 +159,7 @@ flowchart TD
 
 ---
 
-## 4. กลยุทธ์การใช้งาน Git (Branching & Commit Guidelines)
+## 5. กลยุทธ์การใช้งาน Git (Branching & Commit Guidelines)
 
 เพื่อให้ประวัติ Git ใน GitHub แสดง Contribution ของทั้งสองคนอย่างชัดเจนและถูกต้อง:
 
@@ -148,7 +184,7 @@ main (Production: โค้ดที่เสร็จสมบูรณ์แ�
 
 ---
 
-## 5. ไทม์ไลน์การทำงาน 10 วัน (Countdown to Presentation)
+## 6. ไทม์ไลน์การทำงาน 10 วัน (Countdown to Presentation)
 
 | วันที่ | เฟสงาน | กิจกรรมหลัก |
 | :---: | :--- | :--- |
@@ -161,7 +197,7 @@ main (Production: โค้ดที่เสร็จสมบูรณ์แ�
 
 ---
 
-## 6. Checklist ตรวจสอบก่อนขึ้นนำเสนอ
+## 7. Checklist ตรวจสอบก่อนขึ้นนำเสนอ
 - [ ] โค้ดใน Repo รัน `npm start` หรือ `npm run dev` ผ่านฉลุย ไม่มี Warning หรือ Crash
 - [ ] Postman Collection รันผ่าน Newman ได้ผลลัพธ์สีเขียว 100% (All Assertions Passed)
 - [ ] Diagrams ครบ 4 ประเภท (Requirements, Use Cases, Sequence, UML Profile for API)
