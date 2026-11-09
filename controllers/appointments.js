@@ -162,3 +162,86 @@ exports.deleteAppointment = async (req, res, next) =>
         return res.status(500).json({success: false, message: "Cannot delete Appointment"});
     }
 };
+
+//@desc     Export all reservations within a date range to CSV (Extra Credit)
+//@route    GET /api/v1/reservations/export
+//@access   Private (Admin)
+exports.exportReservationsCSV = async (req, res, next) => {
+    try {
+        const { startDate, endDate, restaurantId } = req.query;
+
+        // Build query filter
+        const filter = {};
+
+        if (restaurantId) {
+            filter.$or = [{ hospital: restaurantId }, { restaurant: restaurantId }];
+        }
+
+        // Date range filtering
+        if (startDate || endDate) {
+            const dateRange = {};
+            if (startDate) {
+                dateRange.$gte = new Date(startDate);
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                if (endDate.length <= 10) {
+                    end.setHours(23, 59, 59, 999);
+                }
+                dateRange.$lte = end;
+            }
+            filter.apptDate = dateRange;
+        }
+
+        let query = Appointment.find(filter)
+            .populate({ path: 'user', select: 'name email tel telephone' })
+            .populate({ path: 'hospital', select: 'name address tel openCloseTime' })
+            .sort({ apptDate: 1 });
+
+        const records = await query;
+
+        // Build CSV output
+        const headers = [
+            'Reservation ID',
+            'User Name',
+            'User Email',
+            'User Telephone',
+            'Restaurant Name',
+            'Reservation Date',
+            'Created At'
+        ];
+
+        const escapeCSV = (val) => {
+            if (val === null || val === undefined) return '""';
+            const str = String(val).replace(/"/g, '""');
+            return `"${str}"`;
+        };
+
+        const rows = records.map(r => {
+            const user = r.user || {};
+            const restaurant = r.hospital || r.restaurant || {};
+            const resDate = r.apptDate ? new Date(r.apptDate).toISOString() : '';
+            const createdAt = r.createdAt ? new Date(r.createdAt).toISOString() : '';
+
+            return [
+                escapeCSV(r._id),
+                escapeCSV(user.name || 'N/A'),
+                escapeCSV(user.email || 'N/A'),
+                escapeCSV(user.tel || user.telephone || 'N/A'),
+                escapeCSV(restaurant.name || 'N/A'),
+                escapeCSV(resDate),
+                escapeCSV(createdAt)
+            ].join(',');
+        });
+
+        const csvContent = [headers.join(','), ...rows].join('\r\n');
+        const filename = `reservations_export_${new Date().toISOString().slice(0, 10)}.csv`;
+
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.status(200).send(csvContent);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Cannot export reservations to CSV' });
+    }
+};

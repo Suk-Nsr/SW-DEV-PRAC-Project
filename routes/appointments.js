@@ -1,13 +1,25 @@
 const express = require('express');
-const {getAppointments, getAppointment, addAppointment, updateAppointment, deleteAppointment} = require('../controllers/appointments');
+const {
+    getAppointments,
+    getAppointment,
+    addAppointment,
+    updateAppointment,
+    deleteAppointment,
+    exportReservationsCSV
+} = require('../controllers/appointments');
 
-const router = express.Router({mergeParams: true});
+const router = express.Router({ mergeParams: true });
 
-const {protect, authorize} = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
+
+// Export CSV route (must be defined before /:id)
+router.route('/export')
+    .get(protect, authorize('admin'), exportReservationsCSV);
 
 router.route('/')
     .get(protect, getAppointments)
     .post(protect, authorize('admin', 'user'), addAppointment);
+
 router.route('/:id')
     .get(protect, getAppointment)
     .put(protect, authorize('admin', 'user'), updateAppointment)

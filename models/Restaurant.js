@@ -57,3 +57,4 @@ RestaurantSchema.virtual('reservations', {
 });
 
 module.exports = mongoose.model('Restaurant', RestaurantSchema);
+

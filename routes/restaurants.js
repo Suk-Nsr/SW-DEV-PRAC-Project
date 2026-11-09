@@ -149,3 +149,4 @@ router.route('/:id')
     .delete(protect, authorize('admin'), deleteRestaurant);
 
 module.exports = router;
+

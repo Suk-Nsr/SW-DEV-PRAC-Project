@@ -80,6 +80,7 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // (3) Mount routers
 app.use('/api/v1/restaurants', restaurants);
+app.use('/api/v1/reservations', appointments);
 app.use('/api/v1/appointments', appointments);
 app.use('/api/v1/auth', auth);
 
