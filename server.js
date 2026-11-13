@@ -19,7 +19,7 @@ connectDB();
 
 // Route files
 const restaurants = require('./routes/restaurants');
-const appointments = require('./routes/appointments');
+const reservations = require('./routes/reservations');
 const auth = require('./routes/auth');
 
 const app = express();
@@ -80,8 +80,8 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // (3) Mount routers
 app.use('/api/v1/restaurants', restaurants);
-app.use('/api/v1/reservations', appointments);
-app.use('/api/v1/appointments', appointments);
+app.use('/api/v1/reservations', reservations);
+app.use('/api/v1/appointments', reservations);
 app.use('/api/v1/auth', auth);
 
 const server = app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, ' mode on port ', PORT));

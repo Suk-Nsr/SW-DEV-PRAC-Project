@@ -11,19 +11,10 @@ const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
 
 // Re-route into other resource routers (reservations)
-let reservationRouter;
-try {
-    reservationRouter = require('./reservations');
-} catch (e) {
-    try {
-        reservationRouter = require('./appointments');
-    } catch (err) {}
-}
+const reservationRouter = require('./reservations');
 
-if (reservationRouter) {
-    router.use('/:restaurantId/reservations', reservationRouter);
-    router.use('/:restaurantId/appointments', reservationRouter);
-}
+router.use('/:restaurantId/reservations', reservationRouter);
+router.use('/:restaurantId/appointments', reservationRouter);
 
 /**
  * @swagger

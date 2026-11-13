@@ -71,7 +71,7 @@ flowchart TD
         M1_Test["Testing:<br>- Postman Test Suite (Auth & Restaurant)"]
     end
 
-    subgraph Member2["Alcanratia: Reservation & Engine Domain"]
+    subgraph Member2["Alcanretia: Reservation & Engine Domain"]
         M2_Code["Code:<br>- Reservation Model (user, restaurant, date, tables)<br>- Reservation Controller (CRUD + Quota <= 3 โต๊ะ)<br>- Extra: 2-Hour Cutoff Enforcement<br>- Extra: Time Slot & Table Capacity"]
         M2_Doc["Docs & Diagrams:<br>- Sequence Diagram (Reservation Lifecycle + Rules)<br>- UML Profile for API (Class/Entity Diagram)<br>- Use Case Specs (ฝั่ง Reservation)"]
         M2_Test["Testing:<br>- Postman Test Suite (Reservation & Limits)"]
@@ -105,11 +105,11 @@ flowchart TD
 
 | หมวดหมู่ | งาน / ฟีเจอร์ | ผู้รับผิดชอบหลัก | ผลลัพธ์ / Deliverables | สถานะ |
 | :--- | :--- | :---: | :--- | :---: |
-| **Setup** | • Clone repo, สร้างโฟลเดอร์, วางโครงสร้างจาก VacQ<br>• ตั้งค่า `.env` และเชื่อมต่อ MongoDB Atlas | **Suk-Nsr & Alcanratia** | โครงสร้างโปรเจกต์พร้อมรัน `npm run dev` | In Progress |
+| **Setup** | • Clone repo, สร้างโฟลเดอร์, วางโครงสร้างจาก VacQ<br>• ตั้งค่า `.env` และเชื่อมต่อ MongoDB Atlas | **Suk-Nsr & Alcanretia** | โครงสร้างโปรเจกต์พร้อมรัน `npm run dev` | In Progress |
 | **User & Auth** | • Refactor `models/Users.js`: เพิ่มฟิลด์ `telephone number` พร้อม regex ตรวจสอบ<br>• ตรวจสอบ Register, Login, GetMe, Logout ให้ส่ง `tel` กลับมาด้วย | **Suk-Nsr** | Auth API รองรับเบอร์โทรสมบูรณ์ | Done |
 | **Restaurant** | • สร้าง `models/Restaurant.js` (name, address, telephone, open-close time)<br>• สร้าง `controllers/restaurants.js` และ `routes/restaurants.js`<br>• รองรับ CRUD (Public ดูได้, Admin สร้าง/แก้ไข/ลบได้) | **Suk-Nsr** | Restaurant CRUD API ครบถ้วน | Done |
-| **Reservation** | • สร้าง `models/Reservation.js` (apptDate/reservationDate, user, restaurant, tablesCount)<br>• สร้าง `controllers/reservations.js` และ `routes/reservations.js`<br>• User ทั่วไปดู/แก้/ลบได้เฉพาะของตนเอง<br>• Admin ดู/แก้/ลบได้ทุกการจองในระบบ | **Alcanratia** | Reservation CRUD API ครบถ้วน | Not Started |
-| **Booking Logic** | • ตรวจสอบโควตา: Registered User จองได้สูงสุดไม่เกิน 3 โต๊ะ (หรือ 3 การจอง)<br>• ถ้าไม่ใช่ Admin แล้วพยายามจองเกิน ให้คืนค่า HTTP 400 Bad Request | **Alcanratia** | Validation Logic ใน `addReservation` | Not Started |
+| **Reservation** | • สร้าง `models/Reservation.js` (apptDate/reservationDate, user, restaurant, tablesCount)<br>• สร้าง `controllers/reservations.js` และ `routes/reservations.js`<br>• User ทั่วไปดู/แก้/ลบได้เฉพาะของตนเอง<br>• Admin ดู/แก้/ลบได้ทุกการจองในระบบ | **Alcanretia** | Reservation CRUD API ครบถ้วน | Done |
+| **Booking Logic** | • ตรวจสอบโควตา: Registered User จองได้สูงสุดไม่เกิน 3 โต๊ะ (หรือ 3 การจอง)<br>• ถ้าไม่ใช่ Admin แล้วพยายามจองเกิน ให้คืนค่า HTTP 400 Bad Request | **Alcanretia** | Validation Logic ใน `addReservation` | Done |
 
 ---
 
@@ -117,8 +117,8 @@ flowchart TD
 
 | ฟีเจอร์ Extra Credit | ผู้รับผิดชอบหลัก | รายละเอียดฟังก์ชัน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **1. 2-Hour Cutoff Enforcer** | **Alcanratia** | ตรวจสอบว่าเหลือเวลาก่อนถึงเวลานัดหมาย $\ge 2$ ชั่วโมงหรือไม่ ถ้าเหลือน้อยกว่า 2 ชม. จะไม่อนุญาตให้แก้หรือยกเลิกการจอง | Not Started |
-| **2. Time Slot & Table Capacity** | **Alcanratia** | ให้เลือกช่วงเวลา (Slot) ในช่วงเวลาเปิด-ปิด และเช็คความจุโต๊ะรวมของร้านใน Slot นั้น ไม่ให้จองเกิน | Not Started |
+| **1. 2-Hour Cutoff Enforcer** | **Alcanretia** | ตรวจสอบว่าเหลือเวลาก่อนถึงเวลานัดหมาย $\ge 2$ ชั่วโมงหรือไม่ ถ้าเหลือน้อยกว่า 2 ชม. จะไม่อนุญาตให้แก้หรือยกเลิกการจอง | Done |
+| **2. Time Slot & Table Capacity** | **Alcanretia** | ให้เลือกช่วงเวลา (Slot) ในช่วงเวลาเปิด-ปิด และเช็คความจุโต๊ะรวมของร้านใน Slot นั้น ไม่ให้จองเกิน | Done |
 | **3. Profile & Password Management** | **Suk-Nsr** | API `PUT /auth/updatedetails` (แก้ชื่อ, เบอร์โทร) และ `PUT /auth/updatepassword` (ตรวจรหัสผ่านเดิมก่อนเปลี่ยน) | Done |
 | **4. Admin CSV Export** | **Suk-Nsr** | API `GET /reservations/export` ให้ Admin ดึงข้อมูลการจองตามช่วงวันที่เป็นไฟล์ `.csv` | Done |
 
@@ -131,11 +131,11 @@ flowchart TD
 
 | รายการเอกสาร / Diagram | ผู้รับผิดชอบหลัก | รายละเอียดงาน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **Requirements & Use Case Specs** | **Suk-Nsr & Alcanratia** | Suk-Nsr รับผิดชอบสเปกฝั่ง Auth & Restaurant / Alcanratia รับผิดชอบฝั่ง Reservation | Not Started |
+| **Requirements & Use Case Specs** | **Suk-Nsr & Alcanretia** | Suk-Nsr รับผิดชอบสเปกฝั่ง Auth & Restaurant / Alcanretia รับผิดชอบฝั่ง Reservation | Not Started |
 | **Use Case Diagram (รวมทั้งระบบ)** | **Suk-Nsr** | วาด Diagram ภาพรวม แสดง Actor: Guest, Registered User, Admin เชื่อมกับ Use Cases ทั้งหมด | Not Started |
 | **Sequence Diagram 1: Auth & Restaurant** | **Suk-Nsr** | แสดง Interaction การ Register (มีเบอร์โทร) และ Admin สร้าง/แก้ไขข้อมูลร้านอาหาร | Not Started |
-| **Sequence Diagram 2: Reservation Lifecycle** | **Alcanratia** | แสดง Interaction การจองโต๊ะ (ผ่านการเช็คโควตา 3 โต๊ะ) และการแก้ไข/ยกเลิก (ผ่านการเช็ค Cutoff 2 ชม.) | Not Started |
-| **UML Profile for API (Class/Entity Diagram)** | **Alcanratia** | แสดงโครงสร้าง Entity (User, Restaurant, Reservation), Relationships, Attributes, และ Mapping สู่ REST Endpoints | Not Started |
+| **Sequence Diagram 2: Reservation Lifecycle** | **Alcanretia** | แสดง Interaction การจองโต๊ะ (ผ่านการเช็คโควตา 3 โต๊ะ) และการแก้ไข/ยกเลิก (ผ่านการเช็ค Cutoff 2 ชม.) | Not Started |
+| **UML Profile for API (Class/Entity Diagram)** | **Alcanretia** | แสดงโครงสร้าง Entity (User, Restaurant, Reservation), Relationships, Attributes, และ Mapping สู่ REST Endpoints | Not Started |
 
 ---
 
@@ -144,8 +144,8 @@ flowchart TD
 | รายการทดสอบ | ผู้รับผิดชอบหลัก | รายละเอียดงาน | สถานะ |
 | :--- | :---: | :--- | :---: |
 | **Auth & Restaurant Test Suite** | **Suk-Nsr** | เขียน Test Scripts ใน Postman: Register, Login, Token Extract, CRUD Restaurant, Error Cases | Not Started |
-| **Reservation Test Suite** | **Alcanratia** | เขียน Test Scripts ใน Postman: จองโต๊ะปกติ, จองโต๊ะเกินโควตา (คาดหวัง 400), เช็คสิทธิ์ User vs Admin, Cutoff Test | Not Started |
-| **Newman Automation Pipeline** | **Suk-Nsr & Alcanratia** | รวมเป็น Collection เดียว จัดลำดับ Runner, รันคำสั่ง `newman run ...` พร้อมบันทึกผลการทดสอบเตรียมเปิดเดโมในสไลด์ | Not Started |
+| **Reservation Test Suite** | **Alcanretia** | เขียน Test Scripts ใน Postman: จองโต๊ะปกติ, จองโต๊ะเกินโควตา (คาดหวัง 400), เช็คสิทธิ์ User vs Admin, Cutoff Test | Not Started |
+| **Newman Automation Pipeline** | **Suk-Nsr & Alcanretia** | รวมเป็น Collection เดียว จัดลำดับ Runner, รันคำสั่ง `newman run ...` พร้อมบันทึกผลการทดสอบเตรียมเปิดเดโมในสไลด์ | Not Started |
 
 ---
 
@@ -153,9 +153,9 @@ flowchart TD
 
 | หัวข้อ | ผู้รับผิดชอบหลัก | รายละเอียดงาน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **Extra Credit VDO (ความยาว 3-5 นาที)** | **Suk-Nsr & Alcanratia** | • Suk-Nsr: วาง Script สรุป Concept และเป็นผู้บรรยาย<br>• Alcanratia: เตรียมโค้ด Demo อัดหน้าจอการทำงานของฟีเจอร์ (เช่น Cutoff 2 ชั่วโมง หรือ Slot Capacity)<br>• อัปโหลดขึ้น YouTube (Unlisted) หรือ Google Drive | Not Started |
-| **Slide Deck (7 หัวข้อตาม Syllabus)** | **Suk-Nsr & Alcanratia** | 1. โจทย์ที่ได้รับ<br>2. สาธิต Newman/Postman Runner<br>3. โค้ดที่แก้ไขไปจากเดิม<br>4. เอกสารและ Diagrams<br>5. การแบ่งงานในทีม (Team Contribution Slide)<br>6. ลิงก์คลิป Extra Credit VDO<br>7. ลิงก์ GitHub Repo | Not Started |
-| **Dry Run พรีเซนต์ 7 นาที** | **Suk-Nsr & Alcanratia** | ซ้อมแบ่งบทพูด: Suk-Nsr (3.5 นาที) / Alcanratia (3.5 นาที) พร้อมเตรียมตอบคำถาม Q&A 3 นาที | Not Started |
+| **Extra Credit VDO (ความยาว 3-5 นาที)** | **Suk-Nsr & Alcanretia** | • Suk-Nsr: วาง Script สรุป Concept และเป็นผู้บรรยาย<br>• Alcanretia: เตรียมโค้ด Demo อัดหน้าจอการทำงานของฟีเจอร์ (เช่น Cutoff 2 ชั่วโมง หรือ Slot Capacity)<br>• อัปโหลดขึ้น YouTube (Unlisted) หรือ Google Drive | Not Started |
+| **Slide Deck (7 หัวข้อตาม Syllabus)** | **Suk-Nsr & Alcanretia** | 1. โจทย์ที่ได้รับ<br>2. สาธิต Newman/Postman Runner<br>3. โค้ดที่แก้ไขไปจากเดิม<br>4. เอกสารและ Diagrams<br>5. การแบ่งงานในทีม (Team Contribution Slide)<br>6. ลิงก์คลิป Extra Credit VDO<br>7. ลิงก์ GitHub Repo | Not Started |
+| **Dry Run พรีเซนต์ 7 นาที** | **Suk-Nsr & Alcanretia** | ซ้อมแบ่งบทพูด: Suk-Nsr (3.5 นาที) / Alcanretia (3.5 นาที) พร้อมเตรียมตอบคำถาม Q&A 3 นาที | Not Started |
 
 ---
 
@@ -168,7 +168,7 @@ main (Production: โค้ดที่เสร็จสมบูรณ์แ�
   │
   └── dev (Integration Branch: รวมโค้ดก่อนตัดขึ้น main)
         ├── feat/auth-and-restaurant   <-- Suk-Nsr ทำงานบน Branch นี้
-        ├── feat/reservation-engine    <-- Alcanratia ทำงานบน Branch นี้
+        ├── feat/reservation-engine    <-- Alcanretia ทำงานบน Branch นี้
         └── feat/extra-credits         <-- สลับกันทำหรือแยก branch ย่อย
 ```
 
@@ -188,12 +188,12 @@ main (Production: โค้ดที่เสร็จสมบูรณ์แ�
 
 | วันที่ | เฟสงาน | กิจกรรมหลัก |
 | :---: | :--- | :--- |
-| **Day 1 - 2** | Setup & Schemas | สร้าง Repo, ตั้งค่า Branch, Suk-Nsr Refactor User & Restaurant Schema / Alcanratia วาง Reservation Schema |
-| **Day 3 - 5** | Core Coding | Suk-Nsr เขียน Restaurant CRUD + Extra / Alcanratia เขียน Reservation CRUD + Quota 3 โต๊ะ + Cutoff |
-| **Day 6 - 7** | Testing & Diagrams | Suk-Nsr & Alcanratia เขียน Postman Tests และรวมเข้า Newman Runner พร้อมวาด Diagrams ทั้งหมด |
+| **Day 1 - 2** | Setup & Schemas | สร้าง Repo, ตั้งค่า Branch, Suk-Nsr Refactor User & Restaurant Schema / Alcanretia วาง Reservation Schema |
+| **Day 3 - 5** | Core Coding | Suk-Nsr เขียน Restaurant CRUD + Extra / Alcanretia เขียน Reservation CRUD + Quota 3 โต๊ะ + Cutoff |
+| **Day 6 - 7** | Testing & Diagrams | Suk-Nsr & Alcanretia เขียน Postman Tests และรวมเข้า Newman Runner พร้อมวาด Diagrams ทั้งหมด |
 | **Day 8** | Extra Credit VDO | อัดคลิปสอนทำ Extra Credit VDO (3-5 นาที) และอัปโหลดรับลิงก์ |
 | **Day 9** | Slide Deck | จัดทำสไลด์ 7 หัวข้อ พร้อมแคปภาพ Diagrams, Newman Report, Code Diffs |
-| **Day 10** | Rehearsal & Delivery | ซ้อมพูดจับเวลา 7 นาที (Suk-Nsr 3.5 นาที / Alcanratia 3.5 นาที), ตรวจสอบ Checklist ส่งงาน |
+| **Day 10** | Rehearsal & Delivery | ซ้อมพูดจับเวลา 7 นาที (Suk-Nsr 3.5 นาที / Alcanretia 3.5 นาที), ตรวจสอบ Checklist ส่งงาน |
 
 ---
 

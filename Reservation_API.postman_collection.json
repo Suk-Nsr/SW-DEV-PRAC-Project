@@ -1,0 +1,798 @@
+{
+	"info": {
+		"_postman_id": "a9b1c2d3-e4f5-4789-9876-123456789abc",
+		"name": "Reservation Domain Test Suite (Alcanretia)",
+		"description": "Self-contained and idempotent Newman/Postman automated test suite for Reservation Domain with auto-setup and cleanup of previous reservations.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. Auth - Register Test User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200, 201 or 400\", function () {",
+							"    pm.expect([200, 201, 400]).to.include(pm.response.code);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Alcan TestUser\",\n    \"tel\": \"0812345678\",\n    \"email\": \"alcan_user@test.com\",\n    \"password\": \"123456\",\n    \"role\": \"user\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/auth/register",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "auth", "register"]
+				}
+			}
+		},
+		{
+			"name": "02. Auth - Login Test User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Token is received\", function () {",
+							"    pm.expect(jsonData).to.have.property('token');",
+							"    pm.environment.set(\"userToken\", jsonData.token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"alcan_user@test.com\",\n    \"password\": \"123456\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/auth/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "auth", "login"]
+				}
+			}
+		},
+		{
+			"name": "03. Setup - Cleanup Old User Reservations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"if (jsonData.data && jsonData.data.length > 0) {",
+							"    var token = pm.environment.get('userToken');",
+							"    var baseUrl = pm.variables.get('baseUrl');",
+							"    jsonData.data.forEach(function(item) {",
+							"        pm.sendRequest({",
+							"            url: baseUrl + '/api/v1/reservations/' + item._id,",
+							"            method: 'DELETE',",
+							"            header: {",
+							"                'Authorization': 'Bearer ' + token",
+							"            }",
+							"        }, function (err, res) {",
+							"            console.log('Cleaned up reservation:', item._id);",
+							"        });",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "04. Auth - Register Test Admin (Setup)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200, 201 or 400\", function () {",
+							"    pm.expect([200, 201, 400]).to.include(pm.response.code);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Alcan Admin\",\n    \"tel\": \"0899999999\",\n    \"email\": \"admin_alcan@test.com\",\n    \"password\": \"123456\",\n    \"role\": \"admin\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/auth/register",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "auth", "register"]
+				}
+			}
+		},
+		{
+			"name": "05. Auth - Login Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Admin token is received\", function () {",
+							"    pm.expect(jsonData).to.have.property('token');",
+							"    pm.environment.set(\"adminToken\", jsonData.token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"admin_alcan@test.com\",\n    \"password\": \"123456\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/auth/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "auth", "login"]
+				}
+			}
+		},
+		{
+			"name": "06. Restaurant - Create Test Restaurant (Setup)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 or 200 or 400\", function () {",
+							"    pm.expect([200, 201, 400]).to.include(pm.response.code);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"if (jsonData.data && jsonData.data._id) {",
+							"    pm.environment.set(\"restaurantId\", jsonData.data._id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Alcan Gourmet Kitchen\",\n    \"address\": \"789 Siam Paragon, Bangkok\",\n    \"tel\": \"02-9876543\",\n    \"openCloseTime\": \"10:00 - 22:00\",\n    \"tableCapacity\": 20\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/restaurants",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "restaurants"]
+				}
+			}
+		},
+		{
+			"name": "07. Restaurant - Get Restaurant ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"At least one restaurant exists\", function () {",
+							"    pm.expect(jsonData.data.length).to.be.above(0);",
+							"    pm.environment.set(\"restaurantId\", jsonData.data[0]._id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/restaurants",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "restaurants"]
+				}
+			}
+		},
+		{
+			"name": "08. Reservation - Create Booking 1 (Valid)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Reservation 1 created\", function () {",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"    pm.expect(jsonData.data).to.have.property('_id');",
+							"    pm.environment.set(\"reservationId1\", jsonData.data._id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-01T18:00:00.000Z\",\n    \"timeSlot\": \"18:00\",\n    \"tablesCount\": 1,\n    \"partySize\": 4,\n    \"specialRequests\": \"Window table requested\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "09. Reservation - Get My Reservations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Returns array with at least 1 reservation\", function () {",
+							"    pm.expect(jsonData.data.length).to.be.at.least(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "10. Reservation - Create Booking 2 (Valid)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"if (jsonData.data) {",
+							"    pm.environment.set(\"reservationId2\", jsonData.data._id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-02T19:00:00.000Z\",\n    \"timeSlot\": \"19:00\",\n    \"tablesCount\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "11. Reservation - Create Booking 3 (Valid - Hits Quota Limit)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"if (jsonData.data) {",
+							"    pm.environment.set(\"reservationId3\", jsonData.data._id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-03T20:00:00.000Z\",\n    \"timeSlot\": \"20:00\",\n    \"tablesCount\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "12. Reservation - Create Booking 4 (Expect 400 - Quota Exceeded)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Quota error message matches 3-table limit expectation\", function () {",
+							"    pm.expect(jsonData.success).to.eql(false);",
+							"    pm.expect(jsonData.message).to.match(/already made 3 reservations|3-table quota/);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-04T18:00:00.000Z\",\n    \"timeSlot\": \"18:00\",\n    \"tablesCount\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "13. Reservation - Try Booking Over 3 Tables in Single Request (Expect 400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Rejected due to exceeding 3-table quota\", function () {",
+							"    pm.expect(jsonData.success).to.eql(false);",
+							"    pm.expect(jsonData.message).to.include(\"3-table quota\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-04T19:00:00.000Z\",\n    \"timeSlot\": \"19:00\",\n    \"tablesCount\": 4\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "13. Extra Credit - Outside Opening Hours (Expect 400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Error message indicates outside opening hours\", function () {",
+							"    pm.expect(jsonData.success).to.eql(false);",
+							"    pm.expect(jsonData.message).to.include(\"outside the restaurant opening hours\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-05T03:00:00.000Z\",\n    \"timeSlot\": \"03:00\",\n    \"tablesCount\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "14. Extra Credit - Exceed Table Capacity (Expect 400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Error message indicates capacity exceeded\", function () {",
+							"    pm.expect(jsonData.success).to.eql(false);",
+							"    pm.expect(jsonData.message).to.include(\"capacity exceeded\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-05T18:00:00.000Z\",\n    \"timeSlot\": \"18:00\",\n    \"tablesCount\": 9999\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "15. Reservation - Update Booking (> 2 Hours Ahead, Valid)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Special requests updated\", function () {",
+							"    pm.expect(jsonData.data.specialRequests).to.eql(\"Quiet table updated\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"specialRequests\": \"Quiet table updated\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations/{{reservationId1}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations", "{{reservationId1}}"]
+				}
+			}
+		},
+		{
+			"name": "16. Reservation - Delete Booking (> 2 Hours Ahead, Valid)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Reservation successfully deleted\", function () {",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations/{{reservationId3}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations", "{{reservationId3}}"]
+				}
+			}
+		},
+		{
+			"name": "17. Admin - Export Reservations to CSV",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Content-Type is text/csv\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/csv\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations/export",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations", "export"]
+				}
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}
