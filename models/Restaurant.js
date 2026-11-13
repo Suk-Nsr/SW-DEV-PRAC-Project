@@ -55,7 +55,7 @@ RestaurantSchema.virtual('telephone')
     .set(function(value) { this.tel = value; });
 
 // Pre-save hook to automatically parse openTime and closeTime from openCloseTime
-RestaurantSchema.pre('save', function() {
+RestaurantSchema.pre('save', function(next) {
     if (this.openCloseTime && (!this.openTime || !this.closeTime || this.isModified('openCloseTime'))) {
         const parts = this.openCloseTime.split(/[-–—]/);
         if (parts.length === 2) {
@@ -63,6 +63,7 @@ RestaurantSchema.pre('save', function() {
             this.closeTime = parts[1].trim();
         }
     }
+    next();
 });
 
 // Reverse populate with virtuals for reservations
