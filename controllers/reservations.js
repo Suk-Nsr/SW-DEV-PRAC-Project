@@ -144,12 +144,14 @@ exports.addReservation = async (req, res, next) => {
         }
         req.body.tablesCount = tablesToBook;
 
-        // Quota check: registered user can make up to 3 reservations
+        // Quota check: registered user can reserve up to 3 tables in total
         const existedReservations = await Reservation.find({ user: req.user.id });
-        if (existedReservations.length >= 3 && req.user.role !== 'admin') {
+        const totalBookedTables = existedReservations.reduce((sum, r) => sum + (r.tablesCount || 1), 0);
+
+        if ((totalBookedTables + tablesToBook > 3 || existedReservations.length >= 3) && req.user.role !== 'admin') {
             return res.status(400).json({
                 success: false,
-                message: `The user with ID ${req.user.id} has already made 3 reservations`
+                message: `The user with ID ${req.user.id} has already made 3 reservations or exceeded the 3-table quota (currently booked: ${totalBookedTables}, requested: ${tablesToBook})`
             });
         }
 
