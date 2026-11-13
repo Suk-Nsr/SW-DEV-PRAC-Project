@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a9b1c2d3-e4f5-4789-9876-123456789abc",
 		"name": "Reservation Domain Test Suite (Alcanretia)",
-		"description": "Comprehensive Postman test collection for Reservation CRUD, 3-booking quota, 2-hour cutoff rule, and time slot capacity validation.",
+		"description": "Self-contained Newman/Postman automated test suite for Reservation Domain with auto-setup for Admin and Restaurant.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -13,7 +13,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200 or 201 or 400 (if already exists)\", function () {",
+							"pm.test(\"Status code is 200, 201 or 400\", function () {",
 							"    pm.expect([200, 201, 400]).to.include(pm.response.code);",
 							"});"
 						],
@@ -80,7 +80,41 @@
 			}
 		},
 		{
-			"name": "03. Auth - Login Admin",
+			"name": "03. Auth - Register Test Admin (Setup)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200, 201 or 400\", function () {",
+							"    pm.expect([200, 201, 400]).to.include(pm.response.code);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Alcan Admin\",\n    \"tel\": \"0899999999\",\n    \"email\": \"admin_alcan@test.com\",\n    \"password\": \"123456\",\n    \"role\": \"admin\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/auth/register",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "auth", "register"]
+				}
+			}
+		},
+		{
+			"name": "04. Auth - Login Admin",
 			"event": [
 				{
 					"listen": "test",
@@ -109,7 +143,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"123456\"\n}"
+					"raw": "{\n    \"email\": \"admin_alcan@test.com\",\n    \"password\": \"123456\"\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/api/v1/auth/login",
@@ -119,7 +153,55 @@
 			}
 		},
 		{
-			"name": "04. Restaurant - Get or Setup Restaurant",
+			"name": "05. Restaurant - Create Test Restaurant (Setup)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 or 200 or 400\", function () {",
+							"    pm.expect([200, 201, 400]).to.include(pm.response.code);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"if (jsonData.data && jsonData.data._id) {",
+							"    pm.environment.set(\"restaurantId\", jsonData.data._id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Alcan Gourmet Kitchen\",\n    \"address\": \"789 Siam Paragon, Bangkok\",\n    \"tel\": \"02-9876543\",\n    \"openCloseTime\": \"10:00 - 22:00\",\n    \"tableCapacity\": 20\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/restaurants",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "restaurants"]
+				}
+			}
+		},
+		{
+			"name": "06. Restaurant - Get Restaurant ID",
 			"event": [
 				{
 					"listen": "test",
@@ -149,7 +231,7 @@
 			}
 		},
 		{
-			"name": "05. Reservation - Create Booking 1 (Valid)",
+			"name": "07. Reservation - Create Booking 1 (Valid)",
 			"event": [
 				{
 					"listen": "test",
@@ -199,7 +281,7 @@
 			}
 		},
 		{
-			"name": "06. Reservation - Get My Reservations",
+			"name": "08. Reservation - Get My Reservations",
 			"event": [
 				{
 					"listen": "test",
@@ -238,7 +320,7 @@
 			}
 		},
 		{
-			"name": "07. Reservation - Create Booking 2 (Valid)",
+			"name": "09. Reservation - Create Booking 2 (Valid)",
 			"event": [
 				{
 					"listen": "test",
@@ -248,7 +330,9 @@
 							"    pm.response.to.have.status(201);",
 							"});",
 							"var jsonData = pm.response.json();",
-							"pm.environment.set(\"reservationId2\", jsonData.data._id);"
+							"if (jsonData.data) {",
+							"    pm.environment.set(\"reservationId2\", jsonData.data._id);",
+							"}"
 						],
 						"type": "text/javascript"
 					}
@@ -284,7 +368,7 @@
 			}
 		},
 		{
-			"name": "08. Reservation - Create Booking 3 (Valid - Hits Quota Limit)",
+			"name": "10. Reservation - Create Booking 3 (Valid - Hits Quota Limit)",
 			"event": [
 				{
 					"listen": "test",
@@ -294,7 +378,9 @@
 							"    pm.response.to.have.status(201);",
 							"});",
 							"var jsonData = pm.response.json();",
-							"pm.environment.set(\"reservationId3\", jsonData.data._id);"
+							"if (jsonData.data) {",
+							"    pm.environment.set(\"reservationId3\", jsonData.data._id);",
+							"}"
 						],
 						"type": "text/javascript"
 					}
@@ -330,7 +416,7 @@
 			}
 		},
 		{
-			"name": "09. Reservation - Create Booking 4 (Expect 400 - Quota Exceeded)",
+			"name": "11. Reservation - Create Booking 4 (Expect 400 - Quota Exceeded)",
 			"event": [
 				{
 					"listen": "test",
@@ -379,7 +465,7 @@
 			}
 		},
 		{
-			"name": "10. Extra Credit - Outside Opening Hours (Expect 400)",
+			"name": "12. Extra Credit - Outside Opening Hours (Expect 400)",
 			"event": [
 				{
 					"listen": "test",
@@ -428,7 +514,7 @@
 			}
 		},
 		{
-			"name": "11. Extra Credit - Exceed Table Capacity (Expect 400)",
+			"name": "13. Extra Credit - Exceed Table Capacity (Expect 400)",
 			"event": [
 				{
 					"listen": "test",
@@ -477,7 +563,7 @@
 			}
 		},
 		{
-			"name": "12. Reservation - Update Booking (> 2 Hours Ahead, Valid)",
+			"name": "14. Reservation - Update Booking (> 2 Hours Ahead, Valid)",
 			"event": [
 				{
 					"listen": "test",
@@ -525,7 +611,7 @@
 			}
 		},
 		{
-			"name": "13. Reservation - Delete Booking (> 2 Hours Ahead, Valid)",
+			"name": "15. Reservation - Delete Booking (> 2 Hours Ahead, Valid)",
 			"event": [
 				{
 					"listen": "test",
@@ -564,7 +650,7 @@
 			}
 		},
 		{
-			"name": "14. Admin - Export Reservations to CSV",
+			"name": "16. Admin - Export Reservations to CSV",
 			"event": [
 				{
 					"listen": "test",
