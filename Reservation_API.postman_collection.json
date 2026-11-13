@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a9b1c2d3-e4f5-4789-9876-123456789abc",
 		"name": "Reservation Domain Test Suite (Alcanretia)",
-		"description": "Self-contained Newman/Postman automated test suite for Reservation Domain with auto-setup for Admin and Restaurant.",
+		"description": "Self-contained and idempotent Newman/Postman automated test suite for Reservation Domain with auto-setup and cleanup of previous reservations.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -80,7 +80,58 @@
 			}
 		},
 		{
-			"name": "03. Auth - Register Test Admin (Setup)",
+			"name": "03. Setup - Cleanup Old User Reservations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"if (jsonData.data && jsonData.data.length > 0) {",
+							"    var token = pm.environment.get('userToken');",
+							"    var baseUrl = pm.variables.get('baseUrl');",
+							"    jsonData.data.forEach(function(item) {",
+							"        pm.sendRequest({",
+							"            url: baseUrl + '/api/v1/reservations/' + item._id,",
+							"            method: 'DELETE',",
+							"            header: {",
+							"                'Authorization': 'Bearer ' + token",
+							"            }",
+							"        }, function (err, res) {",
+							"            console.log('Cleaned up reservation:', item._id);",
+							"        });",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "04. Auth - Register Test Admin (Setup)",
 			"event": [
 				{
 					"listen": "test",
@@ -114,7 +165,7 @@
 			}
 		},
 		{
-			"name": "04. Auth - Login Admin",
+			"name": "05. Auth - Login Admin",
 			"event": [
 				{
 					"listen": "test",
@@ -153,7 +204,7 @@
 			}
 		},
 		{
-			"name": "05. Restaurant - Create Test Restaurant (Setup)",
+			"name": "06. Restaurant - Create Test Restaurant (Setup)",
 			"event": [
 				{
 					"listen": "test",
@@ -201,7 +252,7 @@
 			}
 		},
 		{
-			"name": "06. Restaurant - Get Restaurant ID",
+			"name": "07. Restaurant - Get Restaurant ID",
 			"event": [
 				{
 					"listen": "test",
@@ -231,7 +282,7 @@
 			}
 		},
 		{
-			"name": "07. Reservation - Create Booking 1 (Valid)",
+			"name": "08. Reservation - Create Booking 1 (Valid)",
 			"event": [
 				{
 					"listen": "test",
@@ -281,7 +332,7 @@
 			}
 		},
 		{
-			"name": "08. Reservation - Get My Reservations",
+			"name": "09. Reservation - Get My Reservations",
 			"event": [
 				{
 					"listen": "test",
@@ -320,7 +371,7 @@
 			}
 		},
 		{
-			"name": "09. Reservation - Create Booking 2 (Valid)",
+			"name": "10. Reservation - Create Booking 2 (Valid)",
 			"event": [
 				{
 					"listen": "test",
@@ -368,7 +419,7 @@
 			}
 		},
 		{
-			"name": "10. Reservation - Create Booking 3 (Valid - Hits Quota Limit)",
+			"name": "11. Reservation - Create Booking 3 (Valid - Hits Quota Limit)",
 			"event": [
 				{
 					"listen": "test",
@@ -416,7 +467,7 @@
 			}
 		},
 		{
-			"name": "11. Reservation - Create Booking 4 (Expect 400 - Quota Exceeded)",
+			"name": "12. Reservation - Create Booking 4 (Expect 400 - Quota Exceeded)",
 			"event": [
 				{
 					"listen": "test",
@@ -465,7 +516,7 @@
 			}
 		},
 		{
-			"name": "12. Extra Credit - Outside Opening Hours (Expect 400)",
+			"name": "13. Extra Credit - Outside Opening Hours (Expect 400)",
 			"event": [
 				{
 					"listen": "test",
@@ -514,7 +565,7 @@
 			}
 		},
 		{
-			"name": "13. Extra Credit - Exceed Table Capacity (Expect 400)",
+			"name": "14. Extra Credit - Exceed Table Capacity (Expect 400)",
 			"event": [
 				{
 					"listen": "test",
@@ -563,7 +614,7 @@
 			}
 		},
 		{
-			"name": "14. Reservation - Update Booking (> 2 Hours Ahead, Valid)",
+			"name": "15. Reservation - Update Booking (> 2 Hours Ahead, Valid)",
 			"event": [
 				{
 					"listen": "test",
@@ -611,7 +662,7 @@
 			}
 		},
 		{
-			"name": "15. Reservation - Delete Booking (> 2 Hours Ahead, Valid)",
+			"name": "16. Reservation - Delete Booking (> 2 Hours Ahead, Valid)",
 			"event": [
 				{
 					"listen": "test",
@@ -650,7 +701,7 @@
 			}
 		},
 		{
-			"name": "16. Admin - Export Reservations to CSV",
+			"name": "17. Admin - Export Reservations to CSV",
 			"event": [
 				{
 					"listen": "test",
