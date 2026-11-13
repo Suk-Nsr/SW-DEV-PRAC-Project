@@ -14,13 +14,6 @@ const timeToMinutes = (timeStr) => {
     return hours * 60 + minutes;
 };
 
-/**
- * Helper to format date to YYYY-MM-DD
- */
-const getDayString = (dateObj) => {
-    return dateObj.toISOString().slice(0, 10);
-};
-
 //@desc     Get all reservations
 //@route    GET /api/v1/reservations
 //@route    GET /api/v1/restaurants/:restaurantId/reservations
@@ -28,7 +21,7 @@ const getDayString = (dateObj) => {
 exports.getReservations = async (req, res, next) => {
     try {
         let query;
-        const restaurantId = req.params.restaurantId || req.params.hospitalId;
+        const restaurantId = req.params.restaurantId;
 
         // General users can see only their reservations
         if (req.user.role !== 'admin') {
@@ -104,7 +97,7 @@ exports.getReservation = async (req, res, next) => {
 //@access   Private
 exports.addReservation = async (req, res, next) => {
     try {
-        const targetRestaurantId = req.params.restaurantId || req.body.restaurant || req.params.hospitalId || req.body.hospital;
+        const targetRestaurantId = req.params.restaurantId || req.body.restaurant;
 
         if (!targetRestaurantId) {
             return res.status(400).json({
@@ -122,11 +115,10 @@ exports.addReservation = async (req, res, next) => {
             });
         }
 
-        // Map request fields for backward/forward compatibility
         req.body.restaurant = targetRestaurantId;
         req.body.user = req.user.id;
 
-        const rawDate = req.body.reservationDate || req.body.apptDate;
+        const rawDate = req.body.reservationDate;
         if (!rawDate) {
             return res.status(400).json({
                 success: false,
@@ -143,7 +135,7 @@ exports.addReservation = async (req, res, next) => {
         }
         req.body.reservationDate = reservationDate;
 
-        const tablesToBook = parseInt(req.body.tablesCount || req.body.tables || 1, 10);
+        const tablesToBook = parseInt(req.body.tablesCount || 1, 10);
         if (isNaN(tablesToBook) || tablesToBook < 1) {
             return res.status(400).json({
                 success: false,
@@ -161,7 +153,7 @@ exports.addReservation = async (req, res, next) => {
             });
         }
 
-        // Time slot derivation
+        // Time slot derivation: take from req.body.timeSlot or extract from reservationDate
         let slot = req.body.timeSlot;
         if (!slot) {
             const hours = String(reservationDate.getHours()).padStart(2, '0');
@@ -177,12 +169,11 @@ exports.addReservation = async (req, res, next) => {
             const closeMin = timeToMinutes(restaurant.closeTime);
 
             if (slotMin !== null && openMin !== null && closeMin !== null) {
-                // Regular hours or overnight handling
                 let isWithinHours = false;
                 if (openMin <= closeMin) {
                     isWithinHours = slotMin >= openMin && slotMin <= closeMin;
                 } else {
-                    // overnight e.g. 18:00 - 02:00
+                    // overnight handling e.g. 18:00 - 02:00
                     isWithinHours = slotMin >= openMin || slotMin <= closeMin;
                 }
 
@@ -267,7 +258,7 @@ exports.updateReservation = async (req, res, next) => {
 
         // If date, slot, or tablesCount is modified, re-validate capacity
         const targetRestaurantId = req.body.restaurant || reservation.restaurant;
-        const newDateRaw = req.body.reservationDate || req.body.apptDate || reservation.reservationDate;
+        const newDateRaw = req.body.reservationDate || reservation.reservationDate;
         const newReservationDate = new Date(newDateRaw);
 
         if (isNaN(newReservationDate.getTime())) {
@@ -286,7 +277,7 @@ exports.updateReservation = async (req, res, next) => {
             req.body.timeSlot = slot;
         }
 
-        const tablesToBook = parseInt(req.body.tablesCount || req.body.tables || reservation.tablesCount || 1, 10);
+        const tablesToBook = parseInt(req.body.tablesCount || reservation.tablesCount || 1, 10);
         req.body.tablesCount = tablesToBook;
 
         const restaurant = await Restaurant.findById(targetRestaurantId);

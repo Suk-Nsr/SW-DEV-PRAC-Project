@@ -47,22 +47,4 @@ const ReservationSchema = new mongoose.Schema(
     }
 );
 
-// Virtual alias: apptDate <-> reservationDate for backward compatibility with VacQ tests
-ReservationSchema.virtual('apptDate')
-    .get(function() {
-        return this.reservationDate;
-    })
-    .set(function(val) {
-        this.reservationDate = val;
-    });
-
-// Virtual alias: hospital <-> restaurant for backward compatibility if tested with hospital
-ReservationSchema.virtual('hospital')
-    .get(function() {
-        return this.restaurant;
-    })
-    .set(function(val) {
-        this.restaurant = val;
-    });
-
 module.exports = mongoose.model('Reservation', ReservationSchema);
