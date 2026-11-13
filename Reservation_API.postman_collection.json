@@ -477,9 +477,9 @@
 							"    pm.response.to.have.status(400);",
 							"});",
 							"var jsonData = pm.response.json();",
-							"pm.test(\"Quota error message matches expectation\", function () {",
+							"pm.test(\"Quota error message matches 3-table limit expectation\", function () {",
 							"    pm.expect(jsonData.success).to.eql(false);",
-							"    pm.expect(jsonData.message).to.include(\"already made 3 reservations\");",
+							"    pm.expect(jsonData.message).to.match(/already made 3 reservations|3-table quota/);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -507,6 +507,55 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-04T18:00:00.000Z\",\n    \"timeSlot\": \"18:00\",\n    \"tablesCount\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/reservations",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v1", "reservations"]
+				}
+			}
+		},
+		{
+			"name": "13. Reservation - Try Booking Over 3 Tables in Single Request (Expect 400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 Bad Request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Rejected due to exceeding 3-table quota\", function () {",
+							"    pm.expect(jsonData.success).to.eql(false);",
+							"    pm.expect(jsonData.message).to.include(\"3-table quota\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"restaurant\": \"{{restaurantId}}\",\n    \"reservationDate\": \"2026-12-04T19:00:00.000Z\",\n    \"timeSlot\": \"19:00\",\n    \"tablesCount\": 4\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/api/v1/reservations",
