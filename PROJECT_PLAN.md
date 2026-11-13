@@ -106,8 +106,8 @@ flowchart TD
 | หมวดหมู่ | งาน / ฟีเจอร์ | ผู้รับผิดชอบหลัก | ผลลัพธ์ / Deliverables | สถานะ |
 | :--- | :--- | :---: | :--- | :---: |
 | **Setup** | • Clone repo, สร้างโฟลเดอร์, วางโครงสร้างจาก VacQ<br>• ตั้งค่า `.env` และเชื่อมต่อ MongoDB Atlas | **Suk-Nsr & Alcanratia** | โครงสร้างโปรเจกต์พร้อมรัน `npm run dev` | In Progress |
-| **User & Auth** | • Refactor `models/Users.js`: เพิ่มฟิลด์ `telephone number` พร้อม regex ตรวจสอบ<br>• ตรวจสอบ Register, Login, GetMe, Logout ให้ส่ง `tel` กลับมาด้วย | **Suk-Nsr** | Auth API รองรับเบอร์โทรสมบูรณ์ | Not Started |
-| **Restaurant** | • สร้าง `models/Restaurant.js` (name, address, telephone, open-close time)<br>• สร้าง `controllers/restaurants.js` และ `routes/restaurants.js`<br>• รองรับ CRUD (Public ดูได้, Admin สร้าง/แก้ไข/ลบได้) | **Suk-Nsr** | Restaurant CRUD API ครบถ้วน | Not Started |
+| **User & Auth** | • Refactor `models/Users.js`: เพิ่มฟิลด์ `telephone number` พร้อม regex ตรวจสอบ<br>• ตรวจสอบ Register, Login, GetMe, Logout ให้ส่ง `tel` กลับมาด้วย | **Suk-Nsr** | Auth API รองรับเบอร์โทรสมบูรณ์ | Done |
+| **Restaurant** | • สร้าง `models/Restaurant.js` (name, address, telephone, open-close time)<br>• สร้าง `controllers/restaurants.js` และ `routes/restaurants.js`<br>• รองรับ CRUD (Public ดูได้, Admin สร้าง/แก้ไข/ลบได้) | **Suk-Nsr** | Restaurant CRUD API ครบถ้วน | Done |
 | **Reservation** | • สร้าง `models/Reservation.js` (apptDate/reservationDate, user, restaurant, tablesCount)<br>• สร้าง `controllers/reservations.js` และ `routes/reservations.js`<br>• User ทั่วไปดู/แก้/ลบได้เฉพาะของตนเอง<br>• Admin ดู/แก้/ลบได้ทุกการจองในระบบ | **Alcanratia** | Reservation CRUD API ครบถ้วน | Not Started |
 | **Booking Logic** | • ตรวจสอบโควตา: Registered User จองได้สูงสุดไม่เกิน 3 โต๊ะ (หรือ 3 การจอง)<br>• ถ้าไม่ใช่ Admin แล้วพยายามจองเกิน ให้คืนค่า HTTP 400 Bad Request | **Alcanratia** | Validation Logic ใน `addReservation` | Not Started |
 
@@ -119,8 +119,8 @@ flowchart TD
 | :--- | :---: | :--- | :---: |
 | **1. 2-Hour Cutoff Enforcer** | **Alcanratia** | ตรวจสอบว่าเหลือเวลาก่อนถึงเวลานัดหมาย $\ge 2$ ชั่วโมงหรือไม่ ถ้าเหลือน้อยกว่า 2 ชม. จะไม่อนุญาตให้แก้หรือยกเลิกการจอง | Not Started |
 | **2. Time Slot & Table Capacity** | **Alcanratia** | ให้เลือกช่วงเวลา (Slot) ในช่วงเวลาเปิด-ปิด และเช็คความจุโต๊ะรวมของร้านใน Slot นั้น ไม่ให้จองเกิน | Not Started |
-| **3. Profile & Password Management** | **Suk-Nsr** | API `PUT /auth/updatedetails` (แก้ชื่อ, เบอร์โทร) และ `PUT /auth/updatepassword` (ตรวจรหัสผ่านเดิมก่อนเปลี่ยน) | Not Started |
-| **4. Admin CSV Export** | **Suk-Nsr** | API `GET /reservations/export` ให้ Admin ดึงข้อมูลการจองตามช่วงวันที่เป็นไฟล์ `.csv` | Not Started |
+| **3. Profile & Password Management** | **Suk-Nsr** | API `PUT /auth/updatedetails` (แก้ชื่อ, เบอร์โทร) และ `PUT /auth/updatepassword` (ตรวจรหัสผ่านเดิมก่อนเปลี่ยน) | Done |
+| **4. Admin CSV Export** | **Suk-Nsr** | API `GET /reservations/export` ให้ Admin ดึงข้อมูลการจองตามช่วงวันที่เป็นไฟล์ `.csv` | Done |
 
 ---
 
