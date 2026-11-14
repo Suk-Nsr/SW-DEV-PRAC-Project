@@ -5,12 +5,20 @@ const jwt = require('jsonwebtoken');
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Please add a name']
+        required: [true, 'Please add a name'],
+        trim: true
+    },
+    tel: {
+        type: String,
+        required: [true, 'Please add a telephone number'],
+        trim: true
     },
     email: {
         type: String,
         required: [true, 'Please add an email'],
         unique: true,
+        trim: true,
+        lowercase: true,
         match: [
             /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             'Please add a valid email'
@@ -24,7 +32,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Please add a password'],
-        minlength: 6,
+        minlength: [6, 'Password must be at least 6 characters'],
         select: false
     },
     resetPasswordToken: String,
@@ -33,21 +41,32 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Alias virtual for telephone
+UserSchema.virtual('telephone')
+    .get(function() { return this.tel; })
+    .set(function(value) { this.tel = value; });
+
 UserSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) {
+        return next();
+    }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });
 
 UserSchema.methods.getSignedJwtToken = function() {
-    return jwt.sign({id:this._id}, process.env.JWT_SECRET, {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRE
-    })
-}
+    });
+};
 
 UserSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
-}
+};
 
 module.exports = mongoose.model('User', UserSchema);
