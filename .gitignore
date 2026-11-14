@@ -14,3 +14,9 @@ node_modules/
 !*.env.example
 config/config.env
 __tests__/config.env
+
+# Presentation files (keep local, not on git)
+*.pptx
+scripts/generate_pptx.js
+SLIDE_DECK_BLUEPRINT.md
+
