@@ -779,7 +779,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"Illegal User Restaurant 1794649826726\",\n    \"address\": \"123 Unauthorized St\",\n    \"tel\": \"02-0000000\",\n    \"openCloseTime\": \"10:00 - 22:00\"\n}",
+          "raw": "{\n    \"name\": \"Illegal User Restaurant 1794679676720\",\n    \"address\": \"123 Unauthorized St\",\n    \"tel\": \"02-0000000\",\n    \"openCloseTime\": \"10:00 - 22:00\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -836,7 +836,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"Master Siam Gourmet 1794649826726\",\n    \"address\": \"999 Rama 1 Rd, Pathumwan, Bangkok\",\n    \"tel\": \"02-9998888\",\n    \"openCloseTime\": \"10:00 - 22:00\",\n    \"tableCapacity\": 20\n}",
+          "raw": "{\n    \"name\": \"Master Siam Gourmet 1794679676720\",\n    \"address\": \"999 Rama 1 Rd, Pathumwan, Bangkok\",\n    \"tel\": \"02-9998888\",\n    \"openCloseTime\": \"10:00 - 22:00\",\n    \"tableCapacity\": 20\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -1109,6 +1109,10 @@
               "    pm.expect(jsonData.data._id).to.exist;",
               "    pm.environment.set('reservationId1', jsonData.data._id);",
               "    pm.collectionVariables.set('reservationId1', jsonData.data._id);",
+              "});",
+              "pm.test('Extra Credit #4 - Confirmation email dispatched for booking', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.true;",
               "});"
             ],
             "type": "text/javascript"
@@ -1558,6 +1562,10 @@
               "    var jsonData = pm.response.json();",
               "    pm.expect(jsonData.success).to.be.true;",
               "    pm.expect(jsonData.data.specialRequests).to.eql('Quiet table updated');",
+              "});",
+              "pm.test('Extra Credit #4 - Notification email dispatched for modification', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.true;",
               "});"
             ],
             "type": "text/javascript"
@@ -1600,6 +1608,10 @@
               "    pm.response.to.have.status(200);",
               "});",
               "pm.test('Reservation successfully deleted', function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.true;",
+              "});",
+              "pm.test('Extra Credit #4 - Cancellation notice email dispatched for deletion', function () {",
               "    var jsonData = pm.response.json();",
               "    pm.expect(jsonData.success).to.be.true;",
               "});"

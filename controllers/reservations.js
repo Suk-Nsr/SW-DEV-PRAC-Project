@@ -1,5 +1,7 @@
 const Reservation = require('../models/Reservation');
 const Restaurant = require('../models/Restaurant');
+const User = require('../models/Users');
+const { sendReservationNotification } = require('../utils/sendEmail');
 
 /**
  * Helper to parse "HH:mm" string into minutes from midnight (0 - 1439)
@@ -212,6 +214,14 @@ exports.addReservation = async (req, res, next) => {
 
         const reservation = await Reservation.create(req.body);
 
+        // Extra Credit: Send automated reservation confirmation email
+        sendReservationNotification({
+            eventType: 'booking',
+            user: req.user,
+            reservation,
+            restaurant
+        }).catch(err => console.error('[Email Notification Error]', err.message));
+
         res.status(201).json({
             success: true,
             data: reservation
@@ -336,6 +346,14 @@ exports.updateReservation = async (req, res, next) => {
             runValidators: true
         });
 
+        // Extra Credit: Send automated reservation update email
+        sendReservationNotification({
+            eventType: 'modification',
+            user: req.user,
+            reservation,
+            restaurant
+        }).catch(err => console.error('[Email Notification Error]', err.message));
+
         res.status(200).json({ success: true, data: reservation });
     } catch (error) {
         if (error.name === 'CastError') {
@@ -385,7 +403,24 @@ exports.deleteReservation = async (req, res, next) => {
             }
         }
 
+        // Find restaurant and target user for cancellation email
+        const restaurant = await Restaurant.findById(reservation.restaurant);
+        let targetUser = req.user;
+        if (reservation.user.toString() !== req.user.id) {
+            targetUser = await User.findById(reservation.user);
+        }
+
         await reservation.deleteOne();
+
+        // Extra Credit: Send automated reservation cancellation email
+        if (targetUser) {
+            sendReservationNotification({
+                eventType: 'cancellation',
+                user: targetUser,
+                reservation,
+                restaurant
+            }).catch(err => console.error('[Email Notification Error]', err.message));
+        }
 
         res.status(200).json({ success: true, data: {} });
     } catch (error) {

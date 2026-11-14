@@ -556,6 +556,10 @@ masterItems.push(makeItem(
         "    pm.expect(jsonData.data._id).to.exist;",
         "    pm.environment.set('reservationId1', jsonData.data._id);",
         "    pm.collectionVariables.set('reservationId1', jsonData.data._id);",
+        "});",
+        "pm.test('Extra Credit #4 - Confirmation email dispatched for booking', function () {",
+        "    var jsonData = pm.response.json();",
+        "    pm.expect(jsonData.success).to.be.true;",
         "});"
     ]
 ));
@@ -759,6 +763,10 @@ masterItems.push(makeItem(
         "    var jsonData = pm.response.json();",
         "    pm.expect(jsonData.success).to.be.true;",
         "    pm.expect(jsonData.data.specialRequests).to.eql('Quiet table updated');",
+        "});",
+        "pm.test('Extra Credit #4 - Notification email dispatched for modification', function () {",
+        "    var jsonData = pm.response.json();",
+        "    pm.expect(jsonData.success).to.be.true;",
         "});"
     ]
 ));
@@ -775,6 +783,10 @@ masterItems.push(makeItem(
         "    pm.response.to.have.status(200);",
         "});",
         "pm.test('Reservation successfully deleted', function () {",
+        "    var jsonData = pm.response.json();",
+        "    pm.expect(jsonData.success).to.be.true;",
+        "});",
+        "pm.test('Extra Credit #4 - Cancellation notice email dispatched for deletion', function () {",
         "    var jsonData = pm.response.json();",
         "    pm.expect(jsonData.success).to.be.true;",
         "});"
