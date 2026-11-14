@@ -113,14 +113,16 @@ flowchart TD
 
 ---
 
-### ส่วนที่ 2: Extra Credits (3%*)
+### ส่วนที่ 2: Extra Credits (เคลมคะแนนเต็ม 6 ข้อ)
 
 | ฟีเจอร์ Extra Credit | ผู้รับผิดชอบหลัก | รายละเอียดฟังก์ชัน | สถานะ |
 | :--- | :---: | :--- | :---: |
 | **1. 2-Hour Cutoff Enforcer** | **Alcanretia** | ตรวจสอบว่าเหลือเวลาก่อนถึงเวลานัดหมาย $\ge 2$ ชั่วโมงหรือไม่ ถ้าเหลือน้อยกว่า 2 ชม. จะไม่อนุญาตให้แก้หรือยกเลิกการจอง | Done |
 | **2. Time Slot & Table Capacity** | **Alcanretia** | ให้เลือกช่วงเวลา (Slot) ในช่วงเวลาเปิด-ปิด และเช็คความจุโต๊ะรวมของร้านใน Slot นั้น ไม่ให้จองเกิน | Done |
 | **3. Profile & Password Management** | **Suk-Nsr** | API `PUT /auth/updatedetails` (แก้ชื่อ, เบอร์โทร) และ `PUT /auth/updatepassword` (ตรวจรหัสผ่านเดิมก่อนเปลี่ยน) | Done |
-| **4. Admin CSV Export** | **Suk-Nsr** | API `GET /reservations/export` ให้ Admin ดึงข้อมูลการจองตามช่วงวันที่เป็นไฟล์ `.csv` | Done |
+| **4. Automated Email Confirmation** | **Suk-Nsr** | ระบบส่งอีเมลแจ้งเตือนอัตโนมัติเมื่อมีการจองสำเร็จ, แก้ไข หรือยกเลิกการจองผ่าน Third-party Service (Resend / SendGrid / Nodemailer) | Done |
+| **5. Admin CSV Export** | **Suk-Nsr** | API `GET /reservations/export` ให้ Admin ดึงข้อมูลการจองตามช่วงวันที่เป็นไฟล์ `.csv` | Done |
+| **6. Guest Count & Special Requests** | **Alcanretia** | รองรับการระบุจำนวนแขก (`partySize`) และคำขอพิเศษ/ข้อจำกัดด้านอาหาร (`specialRequests`) บันทึกลงระบบ | Done |
 
 ---
 
