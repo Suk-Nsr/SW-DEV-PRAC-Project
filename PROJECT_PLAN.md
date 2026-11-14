@@ -105,7 +105,7 @@ flowchart TD
 
 | หมวดหมู่ | งาน / ฟีเจอร์ | ผู้รับผิดชอบหลัก | ผลลัพธ์ / Deliverables | สถานะ |
 | :--- | :--- | :---: | :--- | :---: |
-| **Setup** | • Clone repo, สร้างโฟลเดอร์, วางโครงสร้างจาก VacQ<br>• ตั้งค่า `.env` และเชื่อมต่อ MongoDB Atlas | **Suk-Nsr & Alcanretia** | โครงสร้างโปรเจกต์พร้อมรัน `npm run dev` | In Progress |
+| **Setup** | • Clone repo, สร้างโฟลเดอร์, วางโครงสร้างจาก VacQ<br>• ตั้งค่า `.env` และเชื่อมต่อ MongoDB Atlas | **Suk-Nsr & Alcanretia** | โครงสร้างโปรเจกต์พร้อมรัน `npm run dev` | Done |
 | **User & Auth** | • Refactor `models/Users.js`: เพิ่มฟิลด์ `telephone number` พร้อม regex ตรวจสอบ<br>• ตรวจสอบ Register, Login, GetMe, Logout ให้ส่ง `tel` กลับมาด้วย | **Suk-Nsr** | Auth API รองรับเบอร์โทรสมบูรณ์ | Done |
 | **Restaurant** | • สร้าง `models/Restaurant.js` (name, address, telephone, open-close time)<br>• สร้าง `controllers/restaurants.js` และ `routes/restaurants.js`<br>• รองรับ CRUD (Public ดูได้, Admin สร้าง/แก้ไข/ลบได้) | **Suk-Nsr** | Restaurant CRUD API ครบถ้วน | Done |
 | **Reservation** | • สร้าง `models/Reservation.js` (apptDate/reservationDate, user, restaurant, tablesCount)<br>• สร้าง `controllers/reservations.js` และ `routes/reservations.js`<br>• User ทั่วไปดู/แก้/ลบได้เฉพาะของตนเอง<br>• Admin ดู/แก้/ลบได้ทุกการจองในระบบ | **Alcanretia** | Reservation CRUD API ครบถ้วน | Done |
@@ -131,11 +131,11 @@ flowchart TD
 
 | รายการเอกสาร / Diagram | ผู้รับผิดชอบหลัก | รายละเอียดงาน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **Requirements & Use Case Specs** | **Suk-Nsr & Alcanretia** | Suk-Nsr รับผิดชอบสเปกฝั่ง Auth & Restaurant / Alcanretia รับผิดชอบฝั่ง Reservation | Not Started |
-| **Use Case Diagram (รวมทั้งระบบ)** | **Suk-Nsr** | วาด Diagram ภาพรวม แสดง Actor: Guest, Registered User, Admin เชื่อมกับ Use Cases ทั้งหมด | Not Started |
-| **Sequence Diagram 1: Auth & Restaurant** | **Suk-Nsr** | แสดง Interaction การ Register (มีเบอร์โทร) และ Admin สร้าง/แก้ไขข้อมูลร้านอาหาร | Not Started |
-| **Sequence Diagram 2: Reservation Lifecycle** | **Alcanretia** | แสดง Interaction การจองโต๊ะ (ผ่านการเช็คโควตา 3 โต๊ะ) และการแก้ไข/ยกเลิก (ผ่านการเช็ค Cutoff 2 ชม.) | Not Started |
-| **UML Profile for API (Class/Entity Diagram)** | **Alcanretia** | แสดงโครงสร้าง Entity (User, Restaurant, Reservation), Relationships, Attributes, และ Mapping สู่ REST Endpoints | Not Started |
+| **Requirements & Use Case Specs** | **Suk-Nsr & Alcanretia** | Suk-Nsr รับผิดชอบสเปกฝั่ง Auth & Restaurant / Alcanretia รับผิดชอบฝั่ง Reservation | Done |
+| **Use Case Diagram (รวมทั้งระบบ)** | **Suk-Nsr** | วาด Diagram ภาพรวม แสดง Actor: Guest, Registered User, Admin เชื่อมกับ Use Cases ทั้งหมด | Done |
+| **Sequence Diagram 1: Auth & Restaurant** | **Suk-Nsr** | แสดง Interaction การ Register (มีเบอร์โทร) และ Admin สร้าง/แก้ไขข้อมูลร้านอาหาร | Done |
+| **Sequence Diagram 2: Reservation Lifecycle** | **Alcanretia** | แสดง Interaction การจองโต๊ะ (ผ่านการเช็คโควตา 3 โต๊ะ) และการแก้ไข/ยกเลิก (ผ่านการเช็ค Cutoff 2 ชม.) | Done |
+| **UML Profile for API (Class/Entity Diagram)** | **Alcanretia** | แสดงโครงสร้าง Entity (User, Restaurant, Reservation), Relationships, Attributes, และ Mapping สู่ REST Endpoints | Done |
 
 ---
 
@@ -143,9 +143,9 @@ flowchart TD
 
 | รายการทดสอบ | ผู้รับผิดชอบหลัก | รายละเอียดงาน | สถานะ |
 | :--- | :---: | :--- | :---: |
-| **Auth & Restaurant Test Suite** | **Suk-Nsr** | เขียน Test Scripts ใน Postman: Register, Login, Token Extract, CRUD Restaurant, Error Cases | Not Started |
-| **Reservation Test Suite** | **Alcanretia** | เขียน Test Scripts ใน Postman: จองโต๊ะปกติ, จองโต๊ะเกินโควตา (คาดหวัง 400), เช็คสิทธิ์ User vs Admin, Cutoff Test | Not Started |
-| **Newman Automation Pipeline** | **Suk-Nsr & Alcanretia** | รวมเป็น Collection เดียว จัดลำดับ Runner, รันคำสั่ง `newman run ...` พร้อมบันทึกผลการทดสอบเตรียมเปิดเดโมในสไลด์ | Not Started |
+| **Auth & Restaurant Test Suite** | **Suk-Nsr** | เขียน Test Scripts ใน Postman: Register, Login, Token Extract, CRUD Restaurant, Error Cases | Done |
+| **Reservation Test Suite** | **Alcanretia** | เขียน Test Scripts ใน Postman: จองโต๊ะปกติ, จองโต๊ะเกินโควตา (คาดหวัง 400), เช็คสิทธิ์ User vs Admin, Cutoff Test | Done |
+| **Newman Automation Pipeline** | **Suk-Nsr & Alcanretia** | รวมเป็น Collection เดียว จัดลำดับ Runner, รันคำสั่ง `newman run ...` พร้อมบันทึกผลการทดสอบเตรียมเปิดเดโมในสไลด์ | Done |
 
 ---
 
