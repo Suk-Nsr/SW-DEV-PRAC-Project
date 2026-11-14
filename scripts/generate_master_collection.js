@@ -80,19 +80,26 @@ masterItems.push(makeItem(
     {
         name: "Sukrit User",
         tel: "0812345678",
-        email: "master_user@test.com",
+        email: "{{testUserEmail}}",
         password: "password123",
         role: "user"
     },
     [
-        "pm.test('Status code is 200, 201 or 400', function () {",
-        "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400]);",
+        "pm.test('Status code is 201 Created', function () {",
+        "    pm.response.to.have.status(201);",
         "});",
         "var jsonData = pm.response.json();",
+        "pm.expect(jsonData.success).to.be.true;",
         "if (jsonData.token) {",
         "    pm.environment.set('userToken', jsonData.token);",
         "    pm.collectionVariables.set('userToken', jsonData.token);",
         "}"
+    ],
+    [
+        "var uniqueId = Date.now();",
+        "var testEmail = 'master_user_' + uniqueId + '@test.com';",
+        "pm.collectionVariables.set('testUserEmail', testEmail);",
+        "pm.environment.set('testUserEmail', testEmail);"
     ]
 ));
 
@@ -105,7 +112,7 @@ masterItems.push(makeItem(
     {
         name: "Duplicate User",
         tel: "0811112222",
-        email: "master_user@test.com",
+        email: "{{testUserEmail}}",
         password: "password123",
         role: "user"
     },
@@ -150,7 +157,7 @@ masterItems.push(makeItem(
     "/api/v1/auth/login",
     { "Content-Type": "application/json" },
     {
-        email: "master_user@test.com",
+        email: "{{testUserEmail}}",
         password: "password123"
     },
     [
@@ -173,7 +180,7 @@ masterItems.push(makeItem(
     "/api/v1/auth/login",
     { "Content-Type": "application/json" },
     {
-        email: "master_user@test.com",
+        email: "{{testUserEmail}}",
         password: "completelyWrongPassword!"
     },
     [
@@ -201,7 +208,8 @@ masterItems.push(makeItem(
         "pm.test('Profile data contains telephone number', function () {",
         "    var jsonData = pm.response.json();",
         "    pm.expect(jsonData.success).to.be.true;",
-        "    pm.expect(jsonData.data.email).to.eql('master_user@test.com');",
+        "    var expectedEmail = pm.collectionVariables.get('testUserEmail') || pm.environment.get('testUserEmail');",
+        "    pm.expect(jsonData.data.email).to.eql(expectedEmail);",
         "    pm.expect(jsonData.data.tel || jsonData.data.telephone).to.exist;",
         "});"
     ]
@@ -356,7 +364,7 @@ masterItems.push(makeItem(
     "/api/v1/auth/login",
     { "Content-Type": "application/json" },
     {
-        email: "master_user@test.com",
+        email: "{{testUserEmail}}",
         password: "newpassword123"
     },
     [
@@ -827,6 +835,7 @@ const masterCollection = {
     },
     variable: [
         { key: "baseUrl", value: "http://localhost:5000", type: "string" },
+        { key: "testUserEmail", value: "master_user@test.com", type: "string" },
         { key: "userToken", value: "", type: "string" },
         { key: "adminToken", value: "", type: "string" },
         { key: "restaurantId", value: "", type: "string" },

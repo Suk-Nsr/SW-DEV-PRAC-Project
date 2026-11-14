@@ -12,6 +12,11 @@
       "type": "string"
     },
     {
+      "key": "testUserEmail",
+      "value": "master_user@test.com",
+      "type": "string"
+    },
+    {
       "key": "userToken",
       "value": "",
       "type": "string"
@@ -69,7 +74,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"Sukrit User\",\n    \"tel\": \"0812345678\",\n    \"email\": \"master_user@test.com\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n}",
+          "raw": "{\n    \"name\": \"Sukrit User\",\n    \"tel\": \"0812345678\",\n    \"email\": \"{{testUserEmail}}\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -80,13 +85,26 @@
       "response": [],
       "event": [
         {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var uniqueId = Date.now();",
+              "var testEmail = 'master_user_' + uniqueId + '@test.com';",
+              "pm.collectionVariables.set('testUserEmail', testEmail);",
+              "pm.environment.set('testUserEmail', testEmail);"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test('Status code is 200, 201 or 400', function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400]);",
+              "pm.test('Status code is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
               "});",
               "var jsonData = pm.response.json();",
+              "pm.expect(jsonData.success).to.be.true;",
               "if (jsonData.token) {",
               "    pm.environment.set('userToken', jsonData.token);",
               "    pm.collectionVariables.set('userToken', jsonData.token);",
@@ -123,7 +141,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"Duplicate User\",\n    \"tel\": \"0811112222\",\n    \"email\": \"master_user@test.com\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n}",
+          "raw": "{\n    \"name\": \"Duplicate User\",\n    \"tel\": \"0811112222\",\n    \"email\": \"{{testUserEmail}}\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -229,7 +247,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"email\": \"master_user@test.com\",\n    \"password\": \"password123\"\n}",
+          "raw": "{\n    \"email\": \"{{testUserEmail}}\",\n    \"password\": \"password123\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -284,7 +302,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"email\": \"master_user@test.com\",\n    \"password\": \"completelyWrongPassword!\"\n}",
+          "raw": "{\n    \"email\": \"{{testUserEmail}}\",\n    \"password\": \"completelyWrongPassword!\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -348,7 +366,8 @@
               "pm.test('Profile data contains telephone number', function () {",
               "    var jsonData = pm.response.json();",
               "    pm.expect(jsonData.success).to.be.true;",
-              "    pm.expect(jsonData.data.email).to.eql('master_user@test.com');",
+              "    var expectedEmail = pm.collectionVariables.get('testUserEmail') || pm.environment.get('testUserEmail');",
+              "    pm.expect(jsonData.data.email).to.eql(expectedEmail);",
               "    pm.expect(jsonData.data.tel || jsonData.data.telephone).to.exist;",
               "});"
             ],
@@ -704,7 +723,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"email\": \"master_user@test.com\",\n    \"password\": \"newpassword123\"\n}",
+          "raw": "{\n    \"email\": \"{{testUserEmail}}\",\n    \"password\": \"newpassword123\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -760,7 +779,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"Illegal User Restaurant 1794648966989\",\n    \"address\": \"123 Unauthorized St\",\n    \"tel\": \"02-0000000\",\n    \"openCloseTime\": \"10:00 - 22:00\"\n}",
+          "raw": "{\n    \"name\": \"Illegal User Restaurant 1794649826726\",\n    \"address\": \"123 Unauthorized St\",\n    \"tel\": \"02-0000000\",\n    \"openCloseTime\": \"10:00 - 22:00\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -817,7 +836,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"Master Siam Gourmet 1794648966989\",\n    \"address\": \"999 Rama 1 Rd, Pathumwan, Bangkok\",\n    \"tel\": \"02-9998888\",\n    \"openCloseTime\": \"10:00 - 22:00\",\n    \"tableCapacity\": 20\n}",
+          "raw": "{\n    \"name\": \"Master Siam Gourmet 1794649826726\",\n    \"address\": \"999 Rama 1 Rd, Pathumwan, Bangkok\",\n    \"tel\": \"02-9998888\",\n    \"openCloseTime\": \"10:00 - 22:00\",\n    \"tableCapacity\": 20\n}",
           "options": {
             "raw": {
               "language": "json"
